@@ -1,16 +1,11 @@
 
-package com.example.smartgoods.entity.repository;
+package com.example.smartgoods_project.entity.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
+import com.example.smartgoods_project.entity.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.example.smartgoods.entity.models.User;
-
-import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -27,9 +22,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
         //List<User> findByUuid(String uuid);
 
-    User findByUsername(String username);
+/*    User findByUsername(String username);
 
-    boolean existsByUsername(String username);
+    boolean existsByUsername(String username);*/
 
+    boolean findByUuid(String uuid);
+
+    boolean existsUserByUuid(String uuid);
 
 }

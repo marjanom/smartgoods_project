@@ -1,4 +1,4 @@
-package com.example.smartgoods.rest.model;
+package com.example.smartgoods_project.rest.model;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +8,5 @@ import lombok.Data;
 public class OutboundUserRegistrationDto {
 
     Long id;
-    String username;
-    String firstName;
-    String lastName;
+    String uuid;
 }

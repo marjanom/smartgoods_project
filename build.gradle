@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.0.1'
+	id 'org.springframework.boot' version '2.7.5'
 	id 'io.spring.dependency-management' version '1.1.0'
 }
 
@@ -25,6 +25,24 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.13'
+
+	// Mapstruct to handle mappers
+	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+
+	// https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-annotations
+	// https://lankydan.dev/documenting-a-spring-rest-api-following-the-openapi-specification
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.7'
+
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.0'
+
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.7.3'
+
+
 }
 
 tasks.named('test') {

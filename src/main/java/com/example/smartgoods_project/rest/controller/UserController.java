@@ -1,10 +1,9 @@
-package com.example.smartgoods.rest.controller;
+package com.example.smartgoods_project.rest.controller;
 
-import com.example.smartgoods.exceptions.UserAlreadyExistsException;
-import com.example.smartgoods.rest.model.InboundUserRegistrationDto;
-import com.example.smartgoods.rest.model.OutboundUserRegistrationDto;
-import com.example.smartgoods.rest.service.UserRestService;
-
+import com.example.smartgoods_project.exceptions.UserAlreadyExistsException;
+import com.example.smartgoods_project.rest.model.InboundUserRegistrationDto;
+import com.example.smartgoods_project.rest.model.OutboundUserRegistrationDto;
+import com.example.smartgoods_project.rest.service.UserRestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
@@ -30,16 +30,10 @@ public class UserController {
 
     UserRestService userRestService;
 
-    /**
-     * Registers the user in the database.
-     *
-     * @param inboundUserRegistrationDto Specifies information to create the user account.
-     * @return Returns HTTP Created.
-     * @throws UserAlreadyExistsException In case the username is already taken.
-     */
+
     @Operation(summary = "Creates a user in the database.", tags = {"Users"}, responses = {@ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutboundUserRegistrationDto.class))), @ApiResponse(description = "User already Exists", responseCode = "409", content = @Content)})
     @PostMapping("/register")
-    public ResponseEntity<OutboundUserRegistrationDto> register(@Valid @RequestBody InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException, MethodArgumentNotValidException{
+    public ResponseEntity<OutboundUserRegistrationDto> register(@Valid @RequestBody InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException{
 
         OutboundUserRegistrationDto outboundUserRegistrationDto = userRestService.createUser(inboundUserRegistrationDto);
         return new ResponseEntity<>(outboundUserRegistrationDto, HttpStatus.CREATED);

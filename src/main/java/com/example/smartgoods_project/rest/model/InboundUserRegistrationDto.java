@@ -1,7 +1,9 @@
-package com.example.smartgoods.rest.model;
+package com.example.smartgoods_project.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
+import org.mapstruct.ap.internal.util.IgnoreJRERequirement;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -11,19 +13,10 @@ import javax.validation.constraints.NotEmpty;
 public class InboundUserRegistrationDto {
 
     @NotBlank
-    @NotBlank
+    @NotEmpty
+    String uuid;
+
+
     String username;
 
-    @NotBlank
-    @NotBlank
-    String firstName;
-
-
-    @NotBlank
-    @NotBlank
-    String lastName;
-
-    @NotBlank
-    @NotEmpty
-    String password;
 }

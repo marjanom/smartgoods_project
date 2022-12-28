@@ -1,4 +1,4 @@
-package com.example.smartgoods.exceptions;
+package com.example.smartgoods_project.exceptions;
 
 public class UserNotFoundException extends Exception {
     public UserNotFoundException(String message) {

@@ -1,11 +1,10 @@
-package com.example.smartgoods.rest.service;
+package com.example.smartgoods_project.rest.service;
 
-import com.example.smartgoods.entity.models.User;
-import com.example.smartgoods.entity.service.UserEntityService;
-import com.example.smartgoods.exceptions.UserAlreadyExistsException;
-import com.example.smartgoods.exceptions.UserNotFoundException;
-import com.example.smartgoods.rest.model.InboundUserRegistrationDto;
-import com.example.smartgoods.rest.model.OutboundUserRegistrationDto;
+
+import com.example.smartgoods_project.entity.service.UserEntityService;
+import com.example.smartgoods_project.exceptions.UserAlreadyExistsException;
+import com.example.smartgoods_project.rest.model.InboundUserRegistrationDto;
+import com.example.smartgoods_project.rest.model.OutboundUserRegistrationDto;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
