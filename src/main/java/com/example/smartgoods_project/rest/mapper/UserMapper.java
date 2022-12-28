@@ -6,17 +6,17 @@ import com.example.smartgoods_project.rest.model.InboundUserRegistrationDto;
 import com.example.smartgoods_project.rest.model.OutboundUserRegistrationDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public class UserMapper {
 
-    String username = "username";
+
     public User inboundToModel(InboundUserRegistrationDto inboundUserRegistrationDto) {
 
         User user = User.builder()
-            .build();
+                .build();
         user.setUuid(inboundUserRegistrationDto.getUuid());
         return user;
-
     }
 
     public OutboundUserRegistrationDto modelToOutboundDto(User user) {

@@ -17,7 +17,6 @@ public class User {
     Long id;
 
     String uuid;
-    String username;
 
 }
 
