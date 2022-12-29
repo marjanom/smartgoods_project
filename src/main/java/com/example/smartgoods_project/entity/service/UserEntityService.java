@@ -53,6 +53,10 @@ public class UserEntityService implements UserRepository {
         return userRepository.findByUuid(uuid);
     }
 
+
+
+
+    //
     @Override
     public List<User> findAll() {
         return null;

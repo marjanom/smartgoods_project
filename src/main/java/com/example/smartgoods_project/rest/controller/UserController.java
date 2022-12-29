@@ -30,6 +30,12 @@ public class UserController {
 
     UserRestService userRestService;
 
+    /**
+     * Registers the user in the database.
+     *
+     * @return Returns HTTP Created.
+     * @throws UserAlreadyExistsException In case the uuid exist`s.
+     */
 
     @Operation(summary = "Creates a user in the database.", tags = {"Users"}, responses = {@ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutboundUserRegistrationDto.class))), @ApiResponse(description = "User already Exists", responseCode = "409", content = @Content)})
     @PostMapping("/register")
