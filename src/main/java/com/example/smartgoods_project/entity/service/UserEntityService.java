@@ -4,6 +4,7 @@ package com.example.smartgoods_project.entity.service;
 import com.example.smartgoods_project.entity.models.User;
 import com.example.smartgoods_project.entity.repository.UserRepository;
 import com.example.smartgoods_project.exceptions.UserAlreadyExistsException;
+import com.example.smartgoods_project.exceptions.UserNotFoundException;
 import com.example.smartgoods_project.rest.mapper.UserMapper;
 import com.example.smartgoods_project.rest.model.InboundUserRegistrationDto;
 import com.example.smartgoods_project.rest.model.OutboundUserRegistrationDto;
@@ -34,7 +35,7 @@ public class UserEntityService implements UserRepository {
 
 
     public OutboundUserRegistrationDto addUser(InboundUserRegistrationDto userDto) throws UserAlreadyExistsException {
-        if (findByUuid(userDto.getUuid())) {
+        if (existsByUuid(userDto.getUuid())) {
             throw new UserAlreadyExistsException("The uuid is already taken!");
         }
         User user = userMapper.inboundToModel(userDto);
@@ -44,19 +45,21 @@ public class UserEntityService implements UserRepository {
     }
 
     @Override
-    public boolean findByUuid(String uuid) {
+    public boolean existsByUuid(String uuid) {
         return userRepository.existsUserByUuid(uuid);
     }
 
     @Override
     public boolean existsUserByUuid(String uuid) {
-        return userRepository.findByUuid(uuid);
+        return userRepository.existsByUuid(uuid);
+    }
+
+    @Override
+    public User findUserByUuid(String uuid) {
+        return userRepository.findUserByUuid(uuid);
     }
 
 
-
-
-    //
     @Override
     public List<User> findAll() {
         return null;

@@ -16,18 +16,15 @@ public class UserRestService {
 
     @NonNull UserEntityService userEntityService;
 
-   public boolean checkUserExistence(String uuid) throws UserNotFoundException {
-        boolean user = userEntityService.findByUuid(uuid);
-        if (user == true) {
-            throw new UserNotFoundException("The user name does not exist!");
+    public boolean checkUserExistence(String uuid) {
+        if (userEntityService.existsByUuid(uuid)) {
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
 
-
-
-    //TODO Refactoring!!!!!!!!!!!!!! In this method we have to check user existance.
     public OutboundUserRegistrationDto createUser(InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException {
         return userEntityService.addUser(inboundUserRegistrationDto);
     }

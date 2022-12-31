@@ -1,8 +1,10 @@
 package com.example.smartgoods_project.rest.controller;
 
+import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import com.example.smartgoods_project.exceptions.UserAlreadyExistsException;
 import com.example.smartgoods_project.rest.model.InboundUserRegistrationDto;
 import com.example.smartgoods_project.rest.model.OutboundUserRegistrationDto;
+import com.example.smartgoods_project.rest.model.ResponseMessageDto;
 import com.example.smartgoods_project.rest.service.UserRestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,8 +25,8 @@ import javax.validation.Valid;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("users")
-@Tag(name = "Users", description = "Endpoints for managing users")
+@RequestMapping("user")
+@Tag(name = "User", description = "Endpoints for managing user")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserController {
 
@@ -37,12 +39,11 @@ public class UserController {
      * @throws UserAlreadyExistsException In case the uuid exist`s.
      */
 
-    @Operation(summary = "Creates a user in the database.", tags = {"Users"}, responses = {@ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutboundUserRegistrationDto.class))), @ApiResponse(description = "User already Exists", responseCode = "409", content = @Content)})
+    @Operation(summary = "Creates a user in the database.", tags = {"User"}, responses = {@ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutboundUserRegistrationDto.class))), @ApiResponse(description = "User already Exists", responseCode = "409", content = @Content)})
     @PostMapping("/register")
-    public ResponseEntity<OutboundUserRegistrationDto> register(@Valid @RequestBody InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException{
-
-        OutboundUserRegistrationDto outboundUserRegistrationDto = userRestService.createUser(inboundUserRegistrationDto);
-        return new ResponseEntity<>(outboundUserRegistrationDto, HttpStatus.CREATED);
+    public ResponseEntity<Object> register(@Valid @RequestBody InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException{
+        userRestService.createUser(inboundUserRegistrationDto);
+        return new ResponseEntity<>(new ResponseMessageDto("Account succesfully created."), HttpStatus.CREATED);
 
     }
 }
@@ -77,14 +78,14 @@ public class UserController {
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("users")
-@Tag(name = "Users", description = "Endpoints for managing users")
+@RequestMapping("user")
+@Tag(name = "User", description = "Endpoints for managing user")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserController {
     UserRestService userRestService;
     @Operation(
             summary = "Creates a user in the database.",
-            tags = {"Users"},
+            tags = {"User"},
             responses = {
                     @ApiResponse(
                             description = "OK",
