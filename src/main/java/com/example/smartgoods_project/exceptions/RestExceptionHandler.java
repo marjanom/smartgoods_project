@@ -20,5 +20,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ResponseMessageDto(e.getMessage()));
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleMissingUuid(UserNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessageDto(e.getMessage()));
+    }
+    @ExceptionHandler(RequirementNotExistsException.class)
+    public ResponseEntity<?> handleMissingRequirement(RequirementNotExistsException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessageDto(e.getMessage()));
+    }
 
 }

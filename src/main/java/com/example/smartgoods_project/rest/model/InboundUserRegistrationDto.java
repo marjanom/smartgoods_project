@@ -9,14 +9,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-@Builder
 public class InboundUserRegistrationDto {
 
     @NotBlank
     @NotEmpty
     String uuid;
-
-
-    String username;
 
 }
