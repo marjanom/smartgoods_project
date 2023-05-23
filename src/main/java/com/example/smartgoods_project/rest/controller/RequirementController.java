@@ -1,5 +1,7 @@
 package com.example.smartgoods_project.rest.controller;
 
+import com.example.smartgoods_project.exceptions.ProjectAlreadyExistsException;
+import com.example.smartgoods_project.exceptions.ProjectNotExistsException;
 import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
 import com.example.smartgoods_project.rest.model.OutboundRequirementUserRequestDto;
@@ -39,13 +41,13 @@ public class RequirementController {
     @Operation(summary = "Create requirement in the database.", tags = {"Requirement"}, responses = {
             @ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ResponseMessageDto.class))),
-            @ApiResponse(description = "Uuid not found.", responseCode = "404", content = @Content)
+            @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
     })
-    @PostMapping("/save/{uuid}")
-    public ResponseEntity<Object> save(@PathVariable(value = "uuid") String uuid, @Valid @RequestBody String requirment)
-            throws UserNotFoundException {
-        requirementRestService.saveRequirement(uuid, requirment);
-        return new ResponseEntity<>(new ResponseMessageDto("Requirement succesfully saved."), HttpStatus.OK);
+    @PostMapping("/save/{username}")
+    public ResponseEntity<Object> create(@PathVariable(value = "username") String username, @RequestBody String project, @RequestBody String requirement)
+            throws UserNotFoundException, ProjectNotExistsException {
+        requirementRestService.saveRequirement(username, project, requirement);
+        return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
     }
 
 
@@ -57,12 +59,12 @@ public class RequirementController {
     @Operation(summary = "List all requirements.", tags = {"Requirement"}, responses = {
             @ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ResponseMessageDto.class))),
-            @ApiResponse(description = "Uuid not found.", responseCode = "404", content = @Content),
+            @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content),
     })
-    @GetMapping("/list/all/{uuid}")
-    public ResponseEntity<List> list(@PathVariable String uuid)
+    @GetMapping("/list/all/{username}")
+    public ResponseEntity<List> list(@PathVariable String username)
             throws UserNotFoundException {
-        List<OutboundRequirementUserRequestDto> outboundRequirementUserRequestDto = requirementRestService.listRequirements(uuid);
+        List<OutboundRequirementUserRequestDto> outboundRequirementUserRequestDto = requirementRestService.listRequirements(username);
         return new ResponseEntity<>(outboundRequirementUserRequestDto, HttpStatus.OK);
     }
 

@@ -20,15 +20,13 @@ public class Requirement {
     private Long userId;
     private String requirement;
     private boolean isRuppScheme;
-    private LocalDateTime created;
-    private LocalDateTime modified;
+    private String project;
 
-    private Integer counter;
-
-    public Requirement(Long userId, String requirement, boolean isRuppScheme) {
+    public Requirement(Long userId, String requirement, boolean isRuppScheme, String project) {
         this.userId = userId;
         this.requirement = requirement;
         this.isRuppScheme = isRuppScheme;
+        this.project = project;
     }
 
     public Requirement(Long userId) {

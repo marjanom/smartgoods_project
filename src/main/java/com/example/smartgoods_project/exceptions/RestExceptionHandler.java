@@ -31,4 +31,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ResponseMessageDto(e.getMessage()));
     }
 
+    @ExceptionHandler(ProjectAlreadyExistsException.class)
+    public ResponseEntity<?> handleMissingRequirement(ProjectAlreadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessageDto(e.getMessage()));
+    }
+
+    @ExceptionHandler(ProjectNotExistsException.class)
+    public ResponseEntity<?> handleMissingRequirement(ProjectNotExistsException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ResponseMessageDto(e.getMessage()));
+    }
+
+
+
 }

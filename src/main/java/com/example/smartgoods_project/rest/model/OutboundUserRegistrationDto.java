@@ -8,5 +8,7 @@ import lombok.Data;
 public class OutboundUserRegistrationDto {
 
     Long id;
-    String uuid;
+    String username;
+    String firstName;
+    String lastName;
 }

@@ -1,7 +1,11 @@
 package com.example.smartgoods_project.entity.models;
 
+import com.example.smartgoods_project.helper.Hashing;
 import lombok.*;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -14,38 +18,38 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private String uuid;
+    Long id;
+    final Long VALID_SESSION_TIME = 1200 * 1000L;
+    String username;
+    String firstName;
+    String lastName;
+    int failedLoginCounter = 0;
+    Long lockedUntil = null;
+    Long sessionValidUntil;
+    UUID session;
+    private byte[] password;
+    private byte[] salt;
 
+    public User(Long id, String username, String firstName, String lastName, int failedLoginCounter, String password) {
+        this.id = id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.failedLoginCounter = failedLoginCounter;
+        ArrayList<byte[]> list = Hashing.generateHash(password);
+        this.salt = list.get(0);
+    }
+
+    public void setPassword(String password) {
+        ArrayList<byte[]> list = Hashing.generateHash(password);
+        this.salt = list.get(0);
+        this.password = list.get(1);
+    }
+
+    public void refreshSession() {
+        this.sessionValidUntil = new Date().getTime() + VALID_SESSION_TIME;
+    }
 }
-
-
-//    public static boolean checkIfRuppScheme(String requirement) {
-//
-//        String[] requiredWords = new String[]{"shall","should","will","with","the","ability","to","be","able","to"};
-//
-//        if(requirement.contains(requiredWords[0]) || requirement.contains(requiredWords[1]) || requirement.contains(requiredWords[2]) ){
-//            return true;
-//        } else return false;
-//
-
-//    	if(requirement.contains(requiredWords[0])){
-//    		int position = requirement.indexOf(requiredWords[0]);
-//    		String sub = requirement.substring(position + 6, position + 10);
-//    		sub.replaceAll("\\s", "");
-//
-//    		if(sub.equals("theabilityto")) {
-//    			return true;
-//    		} else {
-//    		    return false;
-//    		}
-//    	} else { return false; }
-
-//    	if(requirement.contains(requiredWords[0]) || requirement.contains(requiredWords[1]) || requirement.contains(requiredWords[2])) {
-//
-//    		int[] positions = new int[]{requirement.indexOf(requiredWords[0]), requirement.indexOf(requiredWords[1]), requirement.indexOf(requiredWords[2])};
-
-    //if(positionChecker(requirement, requiredWords, positions)) return true;
 
 
 

@@ -14,8 +14,11 @@ public class UserMapper {
     public User inboundToModel(InboundUserRegistrationDto inboundUserRegistrationDto) {
 
         User user = User.builder()
+                .username(inboundUserRegistrationDto.getUsername())
+                .firstName(inboundUserRegistrationDto.getFirstName())
+                .lastName(inboundUserRegistrationDto.getLastName())
                 .build();
-        user.setUuid(inboundUserRegistrationDto.getUuid());
+        user.setPassword(inboundUserRegistrationDto.getPassword());
         return user;
     }
 
@@ -23,7 +26,9 @@ public class UserMapper {
 
         return OutboundUserRegistrationDto.builder()
                 .id(user.getId())
-                .uuid(user.getUuid())
+                .username(user.getUsername())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .build();
     }
 

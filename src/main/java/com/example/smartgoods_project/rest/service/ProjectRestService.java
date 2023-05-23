@@ -4,16 +4,15 @@ package com.example.smartgoods_project.rest.service;
 import com.example.smartgoods_project.entity.models.Project;
 import com.example.smartgoods_project.entity.models.Requirement;
 import com.example.smartgoods_project.entity.models.User;
+import com.example.smartgoods_project.entity.service.ProjectEntityService;
 import com.example.smartgoods_project.entity.service.RequirementEntityService;
 import com.example.smartgoods_project.entity.service.UserEntityService;
-import com.example.smartgoods_project.exceptions.ProjectNotExistsException;
+import com.example.smartgoods_project.exceptions.ProjectAlreadyExistsException;
 import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
 import com.example.smartgoods_project.rest.model.OutboundRequirementUserRequestDto;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,12 +22,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RequirementRestService {
+public class ProjectRestService {
 
     @NonNull RequirementEntityService requirementEntityService;
     @NonNull UserEntityService userEntityService;
     @NonNull UserRestService userRestService;
-    @NonNull ProjectRestService projectRestService;
+    @NonNull ProjectEntityService projectEntityService;
 
     static final Logger log =
             LoggerFactory.getLogger(RequirementRestService.class);
@@ -36,19 +35,36 @@ public class RequirementRestService {
     /**
      * Save requirment in the database
      *
-     * @param id
+     * @param project
      */
-    public boolean checkRequirmentExistance(String id) {
-        Long reqId = Long.parseLong(id);
-        return requirementEntityService.existsById(reqId);
+    public boolean checkProjectExistance(String project) {
+        return projectEntityService.checkProjectExistence(project);
     }
 
-    /**
+    public void createProject(String username, String project) throws UserNotFoundException, ProjectAlreadyExistsException {
+        User user;
+        Long userId;
+        if (!userRestService.checkBoolUserExistence(username)) {
+            throw new UserNotFoundException("This username from user is not found!");
+        } else if (userRestService.checkBoolUserExistence(username)) {
+            user = userEntityService.getUserByUsername(username);
+            userId = user.getId();
+            if (checkProjectExistance(project)) {
+                throw new ProjectAlreadyExistsException("This user have already this existing project");
+            } else {
+                Project project1 = new Project(userId, project);
+                projectEntityService.save(project1);
+            }
+        }
+    }
+
+    /*
+     *//**
      * Save requirment in the database
      *
      * @param id
      * @throws RequirementNotExistsException
-     */
+     *//*
     public void removeRequirement(String id) throws RequirementNotExistsException {
         if (!checkRequirmentExistance(id)) {
             throw new RequirementNotExistsException("This requirement could not be found.");
@@ -57,18 +73,18 @@ public class RequirementRestService {
         requirementEntityService.deleteById(reqId);
     }
 
-    /**
+    *//**
      * Save requirment in the database
      *
      * @param username
      * @throws UserNotFoundException
-     */
+     *//*
     public List<OutboundRequirementUserRequestDto> listRequirements(String username) throws UserNotFoundException {
         User user = new User();
         Long userId;
         List<OutboundRequirementUserRequestDto> responseList = new ArrayList<>();
         if (!userRestService.checkBoolUserExistence(username)) {
-            throw new UserNotFoundException("This username from user is not found!");
+            throw new UserNotFoundException("This uuid from user is not found!");
         } else if (userRestService.checkBoolUserExistence(username)) {
             user = userEntityService.getUserByUsername(username);
             userId = user.getId();
@@ -80,49 +96,6 @@ public class RequirementRestService {
             }
         }
         return responseList;
-    }
+    }*/
 
-    /**
-     * (Boolean)Check requirment according Rupp Scheme.
-     *
-     * @param requirement
-     */
-    public boolean checkIfRuppScheme(String requirement) {
-        String[] requiredWords = new String[]{"shall", "should", "will", "with", "the", "ability", "to", "be", "able", "to"};
-        if (requirement.contains(requiredWords[0]) || requirement.contains(requiredWords[1]) || requirement.contains(requiredWords[2])) {
-            return true;
-        } else return false;
-    }
-
-    /**
-     * (String)Check requirment according Rupp Scheme.
-     *
-     * @param requirement
-     */
-    public String checkIfRuppSchemeToString(String requirement) {
-        String isRuppScheme = String.valueOf(checkIfRuppScheme(requirement));
-        return isRuppScheme;
-    }
-
-
-    public void saveRequirement(String username, String project, String requirement) throws UserNotFoundException, ProjectNotExistsException {
-        User user = new User();
-        Long userId;
-        boolean isRuppScheme = true;
-        if (!projectRestService.checkProjectExistance(project)) {
-            throw new ProjectNotExistsException("This project doesn't exists.");
-        } else if (projectRestService.checkProjectExistance(project)) {
-            if (!userRestService.checkBoolUserExistence(username)) {
-                throw new UserNotFoundException("This username from user is not found!");
-            } else if (userRestService.checkBoolUserExistence(username)) {
-                user = userEntityService.getUserByUsername(username);
-                userId = user.getId();
-                isRuppScheme = checkIfRuppScheme(requirement);
-                Requirement myProvedRequierement = new Requirement(userId, requirement, isRuppScheme, project);
-                //Project existingProject = new Project(userId, requirement, );
-                requirementEntityService.save(myProvedRequierement);
-
-            }
-        }
-    }
 }
