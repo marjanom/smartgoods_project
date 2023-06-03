@@ -1,12 +1,11 @@
 package com.example.smartgoods_project.rest.controller;
 
+import com.example.smartgoods_project.entity.models.Requirement;
 import com.example.smartgoods_project.exceptions.ProjectAlreadyExistsException;
 import com.example.smartgoods_project.exceptions.ProjectNotExistsException;
 import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
-import com.example.smartgoods_project.rest.model.OutboundRequirementUserRequestDto;
-import com.example.smartgoods_project.rest.model.OutboundUserRegistrationDto;
-import com.example.smartgoods_project.rest.model.ResponseMessageDto;
+import com.example.smartgoods_project.rest.model.*;
 import com.example.smartgoods_project.rest.service.RequirementRestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,12 +43,11 @@ public class RequirementController {
             @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
     })
     @PostMapping("/save/{username}")
-    public ResponseEntity<Object> insert (@PathVariable(value = "username") String username, @RequestBody String requirement)
+    public ResponseEntity<Requirement> insert(@PathVariable(value = "username") String username, @RequestBody InboundRequirementRequestDto inboundRequirementRequestDto)
             throws UserNotFoundException, ProjectNotExistsException, ProjectAlreadyExistsException {
-        requirementRestService.saveRequirement(username, requirement);
-        return new ResponseEntity<>(new ResponseMessageDto("Requirement succesfully saved."), HttpStatus.OK);
+        Requirement requirement = requirementRestService.saveRequirement(username, inboundRequirementRequestDto);
+        return new ResponseEntity<>(requirement, HttpStatus.OK);
     }
-
 
 
     /**

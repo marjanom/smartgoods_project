@@ -41,11 +41,9 @@ public class ProjectController {
             @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
     })
     @PostMapping("/save/{username}")
-    public ResponseEntity<Object> create(@PathVariable(value = "username") String username, @RequestBody String project)
+    public ResponseEntity<Object> create(@PathVariable(value = "username") String username, @RequestBody String projectName)
             throws UserNotFoundException, ProjectAlreadyExistsException {
-        projectRestService.createProject(username, project);
+        projectRestService.createProject(username, projectName);
         return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
     }
-
-
 }

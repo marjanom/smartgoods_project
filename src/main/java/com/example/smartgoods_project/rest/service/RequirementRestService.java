@@ -11,7 +11,9 @@ import com.example.smartgoods_project.exceptions.ProjectAlreadyExistsException;
 import com.example.smartgoods_project.exceptions.ProjectNotExistsException;
 import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
+import com.example.smartgoods_project.rest.model.InboundRequirementRequestDto;
 import com.example.smartgoods_project.rest.model.OutboundRequirementUserRequestDto;
+import com.example.smartgoods_project.rest.model.OutboundRequirmentResponseDto;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -108,13 +110,13 @@ public class RequirementRestService {
     }
 
 
-/*    public void saveRequirement(String username, String project, String requirement) throws UserNotFoundException, ProjectNotExistsException {
+    public Requirement saveRequirement(String username, InboundRequirementRequestDto inboundRequirementRequestDto) throws UserNotFoundException, ProjectNotExistsException {
         User user = new User();
         Long userId;
         boolean isRuppScheme = true;
-        if (!projectRestService.checkProjectExistance(project)) {
+        if (!projectRestService.checkProjectExistance(inboundRequirementRequestDto.getProjectName())) {
             throw new ProjectNotExistsException("This project doesn't exists.");
-        } else if (projectRestService.checkProjectExistance(project)) {
+        } else if (projectRestService.checkProjectExistance(inboundRequirementRequestDto.getProjectName())) {
             if (!userRestService.checkBoolUserExistence(username)) {
                 throw new UserNotFoundException("This username from user is not found!");
 
@@ -122,18 +124,20 @@ public class RequirementRestService {
                 user = userEntityService.getUserByUsername(username);
                 userId = user.getId();
                 log.info("hollllaaa");
-                isRuppScheme = checkIfRuppScheme(requirement);
-                Requirement myProvedRequierement = new Requirement(userId, project, requirement, isRuppScheme);
-                Project existingProject = new Project(userId, project, requirement);
+                isRuppScheme = checkIfRuppScheme(inboundRequirementRequestDto.getRequirement());
+                Requirement myProvedRequierement = new Requirement(userId, inboundRequirementRequestDto.getProjectName(), inboundRequirementRequestDto.getRequirement(), isRuppScheme);
+                Project existingProject = new Project(userId, inboundRequirementRequestDto.getProjectName(), inboundRequirementRequestDto.getRequirement());
                 log.info("hollllaaa222222");
-                requirementEntityService.save(myProvedRequierement);
+                Requirement requirement = requirementEntityService.save(myProvedRequierement);
                 projectEntityService.save(existingProject);
-
+                return requirement;
             }
         }
-    }*/
+        return null;
+    }
 
 
+/*
     public void saveRequirement(String username, String requirement) throws UserNotFoundException, ProjectAlreadyExistsException {
         User user;
         Long userId;
@@ -151,6 +155,7 @@ public class RequirementRestService {
 
         }
     }
+*/
 
 
 /*    public void saveRequirement(String username, String project, String requirement) throws UserNotFoundException, ProjectNotExistsException {
