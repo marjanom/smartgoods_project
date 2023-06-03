@@ -44,11 +44,12 @@ public class RequirementController {
             @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
     })
     @PostMapping("/save/{username}")
-    public ResponseEntity<Object> create(@PathVariable(value = "username") String username, @RequestBody String project, @RequestBody String requirement)
-            throws UserNotFoundException, ProjectNotExistsException {
-        requirementRestService.saveRequirement(username, project, requirement);
-        return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
+    public ResponseEntity<Object> insert (@PathVariable(value = "username") String username, @RequestBody String requirement)
+            throws UserNotFoundException, ProjectNotExistsException, ProjectAlreadyExistsException {
+        requirementRestService.saveRequirement(username, requirement);
+        return new ResponseEntity<>(new ResponseMessageDto("Requirement succesfully saved."), HttpStatus.OK);
     }
+
 
 
     /**

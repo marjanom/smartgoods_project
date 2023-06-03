@@ -19,7 +19,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-    final Long VALID_SESSION_TIME = 1200 * 1000L;
+    final Long VALID_SESSION_TIME = 12000* 1000L;
     String username;
     String firstName;
     String lastName;

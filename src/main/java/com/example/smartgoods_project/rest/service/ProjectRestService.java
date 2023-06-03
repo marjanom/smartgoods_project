@@ -38,7 +38,7 @@ public class ProjectRestService {
      * @param project
      */
     public boolean checkProjectExistance(String project) {
-        return projectEntityService.checkProjectExistence(project);
+        return projectEntityService.existsByProject(project);
     }
 
     public void createProject(String username, String project) throws UserNotFoundException, ProjectAlreadyExistsException {
@@ -57,45 +57,5 @@ public class ProjectRestService {
             }
         }
     }
-
-    /*
-     *//**
-     * Save requirment in the database
-     *
-     * @param id
-     * @throws RequirementNotExistsException
-     *//*
-    public void removeRequirement(String id) throws RequirementNotExistsException {
-        if (!checkRequirmentExistance(id)) {
-            throw new RequirementNotExistsException("This requirement could not be found.");
-        }
-        Long reqId = Long.parseLong(id);
-        requirementEntityService.deleteById(reqId);
-    }
-
-    *//**
-     * Save requirment in the database
-     *
-     * @param username
-     * @throws UserNotFoundException
-     *//*
-    public List<OutboundRequirementUserRequestDto> listRequirements(String username) throws UserNotFoundException {
-        User user = new User();
-        Long userId;
-        List<OutboundRequirementUserRequestDto> responseList = new ArrayList<>();
-        if (!userRestService.checkBoolUserExistence(username)) {
-            throw new UserNotFoundException("This uuid from user is not found!");
-        } else if (userRestService.checkBoolUserExistence(username)) {
-            user = userEntityService.getUserByUsername(username);
-            userId = user.getId();
-            List<Requirement> allRequirements = requirementEntityService.findAllByUserId(userId);
-            for (Requirement r : allRequirements) {
-                String a = r.getRequirement().replace("\"", "");
-                OutboundRequirementUserRequestDto outboundRequirementUserRequestDto = new OutboundRequirementUserRequestDto(r.getId(), a, r.isRuppScheme());
-                responseList.add(outboundRequirementUserRequestDto);
-            }
-        }
-        return responseList;
-    }*/
 
 }

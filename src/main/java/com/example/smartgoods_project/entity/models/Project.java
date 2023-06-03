@@ -17,11 +17,17 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long userId;
-    private String projectName;
+    private String project;
     private String requirment;
 
     public Project(Long userId, String project) {
         this.userId = userId;
-        this.projectName = project;
+        this.project = project;
+    }
+
+    public Project(Long userId, String project, String requirment) {
+        this.userId = userId;
+        this.project = project;
+        this.requirment = requirment;
     }
 }

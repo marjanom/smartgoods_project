@@ -18,15 +18,16 @@ public class Requirement {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long userId;
+    private String project;
     private String requirement;
     private boolean isRuppScheme;
-    private String project;
 
-    public Requirement(Long userId, String requirement, boolean isRuppScheme, String project) {
+
+    public Requirement(Long userId, String requirement, boolean isRuppScheme) {
         this.userId = userId;
         this.requirement = requirement;
         this.isRuppScheme = isRuppScheme;
-        this.project = project;
+
     }
 
     public Requirement(Long userId) {
