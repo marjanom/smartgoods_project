@@ -1,10 +1,7 @@
 package com.example.smartgoods_project.rest.controller;
 
-import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
-import com.example.smartgoods_project.exceptions.UserAlreadyExistsException;
-import com.example.smartgoods_project.rest.model.InboundUserRegistrationDto;
-import com.example.smartgoods_project.rest.model.OutboundUserRegistrationDto;
-import com.example.smartgoods_project.rest.model.ResponseMessageDto;
+import com.example.smartgoods_project.exceptions.*;
+import com.example.smartgoods_project.rest.model.*;
 import com.example.smartgoods_project.rest.service.UserRestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.UUID;
 
 
 @RestController
@@ -31,21 +30,63 @@ import javax.validation.Valid;
 public class UserController {
 
     UserRestService userRestService;
+    final static String sessionIdName = "X-SESSION-ID";
 
     /**
      * Registers the user in the database.
      *
      * @return Returns HTTP Created.
-     * @throws UserAlreadyExistsException In case the uuid exist`s.
+     * @throws UserAlreadyExistsException In case the username exist`s.
      */
 
-    @Operation(summary = "Creates a user in the database.", tags = {"User"}, responses = {@ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutboundUserRegistrationDto.class))), @ApiResponse(description = "User already Exists", responseCode = "409", content = @Content)})
+    @Operation(summary = "Creates a user in the database.", tags = {"User"}, responses = {@ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutboundUserRegistrationResponseDto.class))), @ApiResponse(description = "The username is already taken", responseCode = "409", content = @Content)})
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException{
-        userRestService.createUser(inboundUserRegistrationDto);
-        return new ResponseEntity<>(new ResponseMessageDto("Account succesfully created."), HttpStatus.CREATED);
-
+    public ResponseEntity<OutboundUserRegistrationResponseDto> register(@Valid @RequestBody InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException{
+        OutboundUserRegistrationResponseDto response = userRestService.createUser(inboundUserRegistrationDto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @PostMapping("/login")
+    @Operation(summary = "Login a user.", tags = {"User"}, responses = {@ApiResponse(description = "OK", responseCode = "200", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = OutboundUserLoginResponseDto.class))), @ApiResponse(description = "User locked", responseCode = "401", content = @Content), @ApiResponse(description = "User or password is invalid", responseCode = "401", content = @Content)})
+    public ResponseEntity<OutboundUserLoginResponseDto> login(@RequestBody @Valid InboundUserLoginDto inboundUserLoginDto, HttpSession session) throws AuthenticationException, UserLockedException {
+
+        UUID sessionID = UUID.randomUUID();
+        session.setAttribute(sessionIdName, sessionID);
+        userRestService.login(inboundUserLoginDto.getUsername(), inboundUserLoginDto.getPassword(), sessionID);
+        OutboundUserLoginResponseDto response = new OutboundUserLoginResponseDto(inboundUserLoginDto.getUsername());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/{username}/logout")
+    @Operation(summary = "Logs out a user.", tags = {"User"}, responses = {@ApiResponse(description = "OK", responseCode = "200"), @ApiResponse(description = "User not found", responseCode = "404", content = @Content), @ApiResponse(description = "Invalid session", responseCode = "401", content = @Content)})
+    public ResponseEntity<Object> logout(@PathVariable String username, HttpSession session) throws InvalidSessionException, UserNotFoundException {
+
+        userRestService.logout(username, (UUID) session.getAttribute(sessionIdName));
+        session.removeAttribute(sessionIdName);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{username}/password")
+    @Operation(
+            summary = "Change password of a user.",
+            tags = {"User"},
+            responses = {
+                    @ApiResponse(
+                            description = "OK",
+                            responseCode = "200"
+                    ),
+                    @ApiResponse(description = "User not found", responseCode = "404", content = @Content),
+                    @ApiResponse(description = "Invalid session", responseCode = "401", content = @Content),
+                    @ApiResponse(description = "Invalid password", responseCode = "401", content = @Content),
+            }
+    )
+    public ResponseEntity<Object> changePassword(@PathVariable String username, @Valid @RequestBody InboundUserChangePasswordDto inboundUserChangePasswordDto, HttpSession session) throws InvalidSessionException, UserNotFoundException, InvalidPasswordException {
+        userRestService.changePassword(username, inboundUserChangePasswordDto, (UUID) session.getAttribute(sessionIdName));
+        return new ResponseEntity<>(new ResponseMessage("Password was changed"), HttpStatus.OK);
+    }
+
 }
 
 

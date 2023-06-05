@@ -15,20 +15,20 @@ import java.time.LocalDateTime;
 public class Requirement {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
+    private String projectName;
     private String requirement;
     private boolean isRuppScheme;
-    private LocalDateTime created;
-    private LocalDateTime modified;
 
-    private Integer counter;
 
-    public Requirement(Long userId, String requirement, boolean isRuppScheme) {
+    public Requirement(Long userId, String projectName, String requirement, boolean isRuppScheme) {
         this.userId = userId;
+        this.projectName = projectName;
         this.requirement = requirement;
         this.isRuppScheme = isRuppScheme;
+
     }
 
     public Requirement(Long userId) {
