@@ -3,6 +3,8 @@ package com.example.smartgoods_project.rest.controller;
 
 import com.example.smartgoods_project.exceptions.ProjectAlreadyExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
+import com.example.smartgoods_project.rest.model.InboundCreateProjectRequestDto;
+import com.example.smartgoods_project.rest.model.InboundUpdateProjectNameDto;
 import com.example.smartgoods_project.rest.model.ResponseMessageDto;
 import com.example.smartgoods_project.rest.service.ProjectRestService;
 import com.example.smartgoods_project.rest.service.RequirementRestService;
@@ -40,10 +42,21 @@ public class ProjectController {
                     schema = @Schema(implementation = ResponseMessageDto.class))),
             @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
     })
-    @PostMapping("/save/{username}")
-    public ResponseEntity<Object> create(@PathVariable(value = "username") String username, @RequestBody String projectName)
+    @PostMapping("")
+    public ResponseEntity<Object> create(@RequestBody InboundCreateProjectRequestDto inboundCreateProjectRequestDto)
             throws UserNotFoundException, ProjectAlreadyExistsException {
-        projectRestService.createProject(username, projectName);
+        projectRestService.createProject(inboundCreateProjectRequestDto);
+        return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Changes project name.", tags = {"Project"}, responses = {
+            @ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ResponseMessageDto.class))),
+            @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
+    })
+    @PutMapping("/{username}")
+    public ResponseEntity<Object> updateProjectName(@PathVariable String username, @RequestBody InboundUpdateProjectNameDto inboundUpdateProjectNameDto)
+            throws UserNotFoundException {
         return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
     }
 }

@@ -8,6 +8,7 @@ import com.example.smartgoods_project.helper.Hashing;
 import com.example.smartgoods_project.rest.model.InboundUserChangePasswordDto;
 import com.example.smartgoods_project.rest.model.InboundUserRegistrationDto;
 import com.example.smartgoods_project.rest.model.OutboundUserRegistrationDto;
+import com.example.smartgoods_project.rest.model.OutboundUserRegistrationResponseDto;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -78,7 +79,7 @@ public class UserRestService {
             user = checkUserExistence(username);
             checkPassword(password, user);
         } catch (UserNotFoundException | InvalidPasswordException e) {
-            throw new AuthenticationException("Username or password not correct");
+            throw new AuthenticationException("Username or password is invalid");
         }
         checkLockedStatus(user);
         resetLock(user);
@@ -191,8 +192,13 @@ public class UserRestService {
      * @throws UserAlreadyExistsException In case the user already exists.
      */
 
-    public OutboundUserRegistrationDto createUser(InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException {
-        return userEntityService.addUser(inboundUserRegistrationDto);
+    public OutboundUserRegistrationResponseDto createUser(InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException {
+        OutboundUserRegistrationDto outboundUserRegistrationDto = userEntityService.addUser(inboundUserRegistrationDto);
+        OutboundUserRegistrationResponseDto response = new OutboundUserRegistrationResponseDto(
+                outboundUserRegistrationDto.getUsername(),
+                outboundUserRegistrationDto.getFirstName(),
+                outboundUserRegistrationDto.getLastName());
+        return response;
     }
 
     /**

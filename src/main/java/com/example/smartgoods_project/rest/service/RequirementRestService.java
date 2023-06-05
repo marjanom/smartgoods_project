@@ -1,19 +1,22 @@
 package com.example.smartgoods_project.rest.service;
 
 
-import com.example.smartgoods_project.entity.models.Project;
 import com.example.smartgoods_project.entity.models.Requirement;
 import com.example.smartgoods_project.entity.models.User;
 import com.example.smartgoods_project.entity.service.ProjectEntityService;
 import com.example.smartgoods_project.entity.service.RequirementEntityService;
 import com.example.smartgoods_project.entity.service.UserEntityService;
-import com.example.smartgoods_project.exceptions.ProjectAlreadyExistsException;
 import com.example.smartgoods_project.exceptions.ProjectNotExistsException;
 import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
+import com.example.smartgoods_project.rest.mapper.RequirementMapper;
 import com.example.smartgoods_project.rest.model.InboundRequirementRequestDto;
 import com.example.smartgoods_project.rest.model.OutboundRequirementUserRequestDto;
 import com.example.smartgoods_project.rest.model.OutboundRequirmentResponseDto;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.CoreDocument;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +37,7 @@ public class RequirementRestService {
     @NonNull UserRestService userRestService;
     @NonNull ProjectRestService projectRestService;
     @NonNull ProjectEntityService projectEntityService;
+
 
     static final Logger log =
             LoggerFactory.getLogger(RequirementRestService.class);
@@ -93,10 +97,30 @@ public class RequirementRestService {
      * @param requirement
      */
     public boolean checkIfRuppScheme(String requirement) {
-        String[] requiredWords = new String[]{"shall", "should", "will", "with", "the", "ability", "to", "be", "able", "to"};
-        if (requirement.contains(requiredWords[0]) || requirement.contains(requiredWords[1]) || requirement.contains(requiredWords[2])) {
-            return true;
-        } else return false;
+
+        String input = requirement.toLowerCase();
+        String hint;
+        String sentenceStructure = labelPartsOfSpeech(requirement);
+
+        if (input.contains("shall") || input.contains("should") || input.contains("will")) {
+            if (input.contains("shall be able to") || input.contains("shall provide") && input.contains("the ability to")
+                    || input.contains("should be able to") || input.contains("should provide") && input.contains("the ability to")
+                    || input.contains("will be able to") || input.contains("will provide") && input.contains("the ability to")) {
+                if(sentenceStructure.contains("VBJJTOVB") || sentenceStructure.contains("DTNNTOVB")){
+                    return true;
+                } else {
+                    hint = "Process verb after key phrase (be able to/ provide <someone> the abiility to) is missing!";
+                    System.out.println(hint);
+                }
+            } else {
+                hint = "Key phrase (be able to, provide <someone> the ability to) is missing!";
+                System.out.println(hint);
+            }
+        } else {
+            hint = "Keyword (shall, should, will) is missing!";
+            System.out.println(hint);
+        }
+        return false;
     }
 
     /**
@@ -110,8 +134,10 @@ public class RequirementRestService {
     }
 
 
-    public Requirement saveRequirement(String username, InboundRequirementRequestDto inboundRequirementRequestDto) throws UserNotFoundException, ProjectNotExistsException {
+    public OutboundRequirmentResponseDto saveRequirement(InboundRequirementRequestDto inboundRequirementRequestDto) throws UserNotFoundException, ProjectNotExistsException {
         User user = new User();
+        RequirementMapper mapper = new RequirementMapper();
+        String username = inboundRequirementRequestDto.getUsername();
         Long userId;
         boolean isRuppScheme = true;
         if (!projectRestService.checkProjectExistance(inboundRequirementRequestDto.getProjectName())) {
@@ -126,11 +152,12 @@ public class RequirementRestService {
                 log.info("hollllaaa");
                 isRuppScheme = checkIfRuppScheme(inboundRequirementRequestDto.getRequirement());
                 Requirement myProvedRequierement = new Requirement(userId, inboundRequirementRequestDto.getProjectName(), inboundRequirementRequestDto.getRequirement(), isRuppScheme);
-                Project existingProject = new Project(userId, inboundRequirementRequestDto.getProjectName(), inboundRequirementRequestDto.getRequirement());
-                log.info("hollllaaa222222");
+                //Project existingProject = new Project(userId, inboundRequirementRequestDto.getProjectName(), inboundRequirementRequestDto.getRequirement());
+                //log.info("hollllaaa222222");
                 Requirement requirement = requirementEntityService.save(myProvedRequierement);
-                projectEntityService.save(existingProject);
-                return requirement;
+                //projectEntityService.save(existingProject);
+                OutboundRequirmentResponseDto outboundRequirmentResponseDto = mapper.DbResponseToResponseDto(requirement, username);
+                return outboundRequirmentResponseDto;
             }
         }
         return null;
@@ -182,4 +209,21 @@ public class RequirementRestService {
             }
         }
     }*/
+
+    private String labelPartsOfSpeech(String input){
+        StringBuilder sentenceStructure = new StringBuilder();
+
+        StanfordCoreNLP stanfordCoreNLP = Pipeline.getInstance();
+        CoreDocument coreDocument = new CoreDocument(input);
+        stanfordCoreNLP.annotate(coreDocument);
+        List<CoreLabel> coreLabels = coreDocument.tokens();
+
+        for(CoreLabel coreLabel : coreLabels){
+            String pos = coreLabel.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+            sentenceStructure.append(pos);
+            //System.out.println(sentenceStructure);
+            //System.out.println(coreLabel.originalText() + "=" + pos);
+        }
+        return sentenceStructure.toString();
+    }
 }

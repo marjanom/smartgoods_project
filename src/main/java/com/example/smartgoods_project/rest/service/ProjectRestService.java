@@ -10,6 +10,7 @@ import com.example.smartgoods_project.entity.service.UserEntityService;
 import com.example.smartgoods_project.exceptions.ProjectAlreadyExistsException;
 import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
+import com.example.smartgoods_project.rest.model.InboundCreateProjectRequestDto;
 import com.example.smartgoods_project.rest.model.OutboundRequirementUserRequestDto;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,9 @@ public class ProjectRestService {
         return projectEntityService.existsByProject(project);
     }
 
-    public void createProject(String username, String project) throws UserNotFoundException, ProjectAlreadyExistsException {
+    public void createProject(InboundCreateProjectRequestDto inboundCreateProjectRequestDto) throws UserNotFoundException, ProjectAlreadyExistsException {
+        String username = inboundCreateProjectRequestDto.getUsername();
+        String project = inboundCreateProjectRequestDto.getProjectName();
         User user;
         Long userId;
         if (!userRestService.checkBoolUserExistence(username)) {

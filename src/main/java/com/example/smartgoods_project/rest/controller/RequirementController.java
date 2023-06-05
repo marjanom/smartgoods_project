@@ -39,14 +39,14 @@ public class RequirementController {
      */
     @Operation(summary = "Create requirement in the database.", tags = {"Requirement"}, responses = {
             @ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ResponseMessageDto.class))),
+                    schema = @Schema(implementation = OutboundRequirmentResponseDto.class))),
             @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
     })
-    @PostMapping("/save/{username}")
-    public ResponseEntity<Requirement> insert(@PathVariable(value = "username") String username, @RequestBody InboundRequirementRequestDto inboundRequirementRequestDto)
-            throws UserNotFoundException, ProjectNotExistsException, ProjectAlreadyExistsException {
-        Requirement requirement = requirementRestService.saveRequirement(username, inboundRequirementRequestDto);
-        return new ResponseEntity<>(requirement, HttpStatus.OK);
+    @PostMapping("")
+    public ResponseEntity<OutboundRequirmentResponseDto> insert(@RequestBody InboundRequirementRequestDto inboundRequirementRequestDto)
+            throws UserNotFoundException, ProjectNotExistsException {
+        OutboundRequirmentResponseDto response = requirementRestService.saveRequirement(inboundRequirementRequestDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

@@ -44,7 +44,9 @@ dependencies {
 
 	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.16.0'
 
-
+	//stanford corenlp - check for updated versions on https://stanfordnlp.github.io/CoreNLP/index.html if not working
+	implementation 'edu.stanford.nlp:stanford-corenlp:4.5.4'
+	implementation 'edu.stanford.nlp:stanford-corenlp:4.5.4:models'
 }
 
 tasks.named('test') {

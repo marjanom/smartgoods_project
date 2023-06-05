@@ -17,7 +17,7 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     final Long VALID_SESSION_TIME = 12000* 1000L;
     String username;

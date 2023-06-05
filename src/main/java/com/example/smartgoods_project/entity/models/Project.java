@@ -14,20 +14,21 @@ import javax.persistence.*;
 public class Project {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
+
     private String project;
-    private String requirment;
+    private String requirement;
 
     public Project(Long userId, String project) {
         this.userId = userId;
         this.project = project;
     }
 
-    public Project(Long userId, String project, String requirment) {
+    public Project(Long userId, String project, String requirement) {
         this.userId = userId;
         this.project = project;
-        this.requirment = requirment;
+        this.requirement = requirement;
     }
 }

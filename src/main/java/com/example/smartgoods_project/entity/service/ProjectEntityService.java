@@ -29,6 +29,7 @@ public class ProjectEntityService implements ProjectRepository{
     ProjectRepository projectRepository;
 
 
+    @Override
     public <S extends Project> S save(S entity) {
         return projectRepository.save(entity);
     }
@@ -45,7 +46,7 @@ public class ProjectEntityService implements ProjectRepository{
 
     @Override
     public boolean existsByProject(String project) {
-        return false;
+        return projectRepository.existsByProject(project);
     }
 
 

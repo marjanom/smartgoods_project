@@ -39,21 +39,23 @@ public class UserController {
      * @throws UserAlreadyExistsException In case the username exist`s.
      */
 
-    @Operation(summary = "Creates a user in the database.", tags = {"User"}, responses = {@ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutboundUserRegistrationDto.class))), @ApiResponse(description = "User already Exists", responseCode = "409", content = @Content)})
+    @Operation(summary = "Creates a user in the database.", tags = {"User"}, responses = {@ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutboundUserRegistrationResponseDto.class))), @ApiResponse(description = "The username is already taken", responseCode = "409", content = @Content)})
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException{
-        userRestService.createUser(inboundUserRegistrationDto);
-        return new ResponseEntity<>(new ResponseMessageDto("Account succesfully created."), HttpStatus.CREATED);
+    public ResponseEntity<OutboundUserRegistrationResponseDto> register(@Valid @RequestBody InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException{
+        OutboundUserRegistrationResponseDto response = userRestService.createUser(inboundUserRegistrationDto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Login a user.", tags = {"User"}, responses = {@ApiResponse(description = "OK", responseCode = "200"), @ApiResponse(description = "User locked", responseCode = "401", content = @Content), @ApiResponse(description = "User or password not correct", responseCode = "401", content = @Content)})
-    public ResponseEntity<Object> login(@RequestBody @Valid InboundUserLoginDto inboundUserLoginDto, HttpSession session) throws AuthenticationException, UserLockedException {
+    @Operation(summary = "Login a user.", tags = {"User"}, responses = {@ApiResponse(description = "OK", responseCode = "200", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = OutboundUserLoginResponseDto.class))), @ApiResponse(description = "User locked", responseCode = "401", content = @Content), @ApiResponse(description = "User or password is invalid", responseCode = "401", content = @Content)})
+    public ResponseEntity<OutboundUserLoginResponseDto> login(@RequestBody @Valid InboundUserLoginDto inboundUserLoginDto, HttpSession session) throws AuthenticationException, UserLockedException {
 
         UUID sessionID = UUID.randomUUID();
         session.setAttribute(sessionIdName, sessionID);
         userRestService.login(inboundUserLoginDto.getUsername(), inboundUserLoginDto.getPassword(), sessionID);
-        return new ResponseEntity<>(new ResponseMessage("Login was succesfull."), HttpStatus.OK);
+        OutboundUserLoginResponseDto response = new OutboundUserLoginResponseDto(inboundUserLoginDto.getUsername());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

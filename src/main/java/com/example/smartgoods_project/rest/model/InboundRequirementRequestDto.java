@@ -19,10 +19,8 @@ public class InboundRequirementRequestDto {
     @NonNull
     String projectName;
 
-
     @NotBlank
     @NonNull
     String requirement;
-
 
 }
