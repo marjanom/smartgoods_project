@@ -2,6 +2,7 @@ package com.example.smartgoods_project.rest.controller;
 
 
 import com.example.smartgoods_project.exceptions.ProjectAlreadyExistsException;
+import com.example.smartgoods_project.exceptions.ProjectNotExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
 import com.example.smartgoods_project.rest.model.InboundCreateProjectRequestDto;
 import com.example.smartgoods_project.rest.model.InboundUpdateProjectNameDto;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,17 +63,16 @@ public class ProjectController {
         return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
     }*/
 
-    /*@Operation(summary = "Deletes project from the database.", tags = {"Project"}, responses = {
-            @ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ResponseMessageDto.class))),
-            @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
+    @Operation(summary = "Deletes project from the database.", tags = {"Project"}, responses = {
+            @ApiResponse(description = "Project Deleted", responseCode = "204"),
+            @ApiResponse(description = "This project doesn't exist", responseCode = "404", content = @Content)
     })
-    @DeleteMapping("/{username}/{id}")
-    public ResponseEntity<Object> deleteProject(@Param InboundCreateProjectRequestDto inboundCreateProjectRequestDto)
-            throws UserNotFoundException, ProjectAlreadyExistsException {
-        projectRestService.createProject(inboundCreateProjectRequestDto);
-        return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
-    }*/
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteProject(@PathVariable(value = "id") String id)
+            throws ProjectNotExistsException {
+        projectRestService.deleteProject(id);
+        return new ResponseEntity<>(new ResponseMessageDto("Project was deleted successfully."), HttpStatus.OK);
+    }
 
 
 }

@@ -8,8 +8,10 @@ import com.example.smartgoods_project.entity.service.ProjectEntityService;
 import com.example.smartgoods_project.entity.service.RequirementEntityService;
 import com.example.smartgoods_project.entity.service.UserEntityService;
 import com.example.smartgoods_project.exceptions.ProjectAlreadyExistsException;
+import com.example.smartgoods_project.exceptions.ProjectNotExistsException;
 import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
+import com.example.smartgoods_project.helper.IdentifierUtils;
 import com.example.smartgoods_project.rest.model.InboundCreateProjectRequestDto;
 import com.example.smartgoods_project.rest.model.InboundUpdateProjectNameDto;
 import com.example.smartgoods_project.rest.model.OutboundRequirementUserRequestDto;
@@ -30,6 +32,8 @@ public class ProjectRestService {
     @NonNull UserEntityService userEntityService;
     @NonNull UserRestService userRestService;
     @NonNull ProjectEntityService projectEntityService;
+
+    @NonNull IdentifierUtils identifierUtils;
 
     static final Logger log =
             LoggerFactory.getLogger(RequirementRestService.class);
@@ -79,5 +83,14 @@ public class ProjectRestService {
             }
             }
     }*/
+
+    public void deleteProject(String id) throws ProjectNotExistsException{
+        long projectId = Long.valueOf(id);
+        String projectName = identifierUtils.getProjectNameFromId(projectId);
+        if (!checkProjectExistance(projectName) || projectName.equals("")) {
+            throw new ProjectNotExistsException("This project doesn't exists.");
+        }
+        projectEntityService.deleteProject(projectId);
+    }
 
 }

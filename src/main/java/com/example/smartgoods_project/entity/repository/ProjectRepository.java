@@ -21,4 +21,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query(value="UPDATE projects SET project = :newProjectName WHERE user_id = :userID AND project = :oldProjectName", nativeQuery = true)
     void updateProjectName(@Param("userID") Long userId,@Param("oldProjectName") String oldProjectName, @Param("newProjectName") String newProjectName);
+
+    /*@Query(value="DELETE FROM projects WHERE id = :projectId AND user_id = :userId", nativeQuery = true)
+    void deleteProject(Long userId, Long projectId);*/
+    void deleteById(Long id);
+
+
 }

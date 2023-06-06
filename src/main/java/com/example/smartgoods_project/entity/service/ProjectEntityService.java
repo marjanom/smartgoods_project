@@ -47,4 +47,12 @@ public class ProjectEntityService{
     public Project findProject(String projectName){
         return projectRepository.findByProjectName(projectName);
     }
+
+    public Optional<Project> findProjectById(Long id){
+        return projectRepository.findById(id);
+    }
+
+    public void deleteProject(Long projectId){
+        projectRepository.deleteById(projectId);
+    }
 }
