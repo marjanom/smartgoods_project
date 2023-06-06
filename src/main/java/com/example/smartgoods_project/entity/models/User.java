@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +30,9 @@ public class User {
     UUID session;
     private byte[] password;
     private byte[] salt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Project> projects = new ArrayList<>();
 
     public User(Long id, String username, String firstName, String lastName, int failedLoginCounter, String password) {
         this.id = id;

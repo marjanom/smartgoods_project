@@ -56,7 +56,8 @@ public class ProjectController {
     })
     @PutMapping("/{username}")
     public ResponseEntity<Object> updateProjectName(@PathVariable String username, @RequestBody InboundUpdateProjectNameDto inboundUpdateProjectNameDto)
-            throws UserNotFoundException {
+            throws Exception, UserNotFoundException {
+        projectRestService.updateProjectName(username, inboundUpdateProjectNameDto);
         return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
     }
 }

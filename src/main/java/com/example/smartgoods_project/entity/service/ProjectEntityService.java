@@ -23,18 +23,18 @@ import java.util.function.Function;
 @Log4j2
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class ProjectEntityService implements ProjectRepository{
+public class ProjectEntityService{
 
 
     ProjectRepository projectRepository;
 
 
-    @Override
+    //@Override
     public <S extends Project> S save(S entity) {
         return projectRepository.save(entity);
     }
 
-    @Override
+    /*@Override
     public List<Project> findAllByUserId(Long userId) {
         return null;
     }
@@ -42,15 +42,20 @@ public class ProjectEntityService implements ProjectRepository{
     @Override
     public Project findByUserId(String userId) {
         return null;
-    }
+    }*/
 
-    @Override
+    //@Override
     public boolean existsByProject(String project) {
         return projectRepository.existsByProject(project);
     }
 
 
-    @Override
+    public void updateProjectName(Long userId, String oldProjectName, String newProjectName) {
+        projectRepository.updateProjectName(userId, oldProjectName, newProjectName);
+    }
+
+
+    /*@Override
     public List<Project> findAll() {
         return null;
     }
@@ -193,5 +198,5 @@ public class ProjectEntityService implements ProjectRepository{
     @Override
     public <S extends Project, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
-    }
+    }*/
 }

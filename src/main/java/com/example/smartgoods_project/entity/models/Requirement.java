@@ -22,6 +22,10 @@ public class Requirement {
     private String requirement;
     private boolean isRuppScheme;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
 
     public Requirement(Long userId, String projectName, String requirement, boolean isRuppScheme) {
         this.userId = userId;

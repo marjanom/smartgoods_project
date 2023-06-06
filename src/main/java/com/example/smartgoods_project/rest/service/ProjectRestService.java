@@ -11,6 +11,7 @@ import com.example.smartgoods_project.exceptions.ProjectAlreadyExistsException;
 import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
 import com.example.smartgoods_project.rest.model.InboundCreateProjectRequestDto;
+import com.example.smartgoods_project.rest.model.InboundUpdateProjectNameDto;
 import com.example.smartgoods_project.rest.model.OutboundRequirementUserRequestDto;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,25 @@ public class ProjectRestService {
                 projectEntityService.save(project1);
             }
         }
+    }
+
+    public void updateProjectName(String username, InboundUpdateProjectNameDto inboundUpdateProjectNameDto) throws Exception, UserNotFoundException {
+        User user;
+        Long userId;
+
+        if (!userRestService.checkBoolUserExistence(username)) {
+            throw new UserNotFoundException("This username from user is not found!");
+        } else if (userRestService.checkBoolUserExistence(username)) {
+            try {
+                user = userEntityService.getUserByUsername(username);
+                userId = user.getId();
+                requirementEntityService.updateProjectName(userId, inboundUpdateProjectNameDto.getOldProjectName(), inboundUpdateProjectNameDto.getNewProjectName());
+                projectEntityService.updateProjectName(userId, inboundUpdateProjectNameDto.getOldProjectName(), inboundUpdateProjectNameDto.getNewProjectName());
+
+            } catch(Exception ex){
+                throw new Exception("Something went wrong while updating project name");
+            }
+            }
     }
 
 }

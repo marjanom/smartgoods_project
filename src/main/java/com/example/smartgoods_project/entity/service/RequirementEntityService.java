@@ -27,6 +27,16 @@ public class RequirementEntityService implements RequirementRepository {
     RequirementRepository requirementRepository;
 
 
+    public void updateProjectName(Long userId, String oldProjectName, String newProjectName){
+        List<Requirement> requirements = findByUserIdAndProjectName(userId, oldProjectName);
+
+        for (Requirement requirement : requirements) {
+            String currentRequirement = requirement.getRequirement();
+            currentRequirement.replace(oldProjectName, newProjectName);
+            requirement.setRequirement(currentRequirement);
+        }
+
+    }
     @Override
     public List<Requirement> findAllByUserId(Long userId) {
         return requirementRepository.findAllByUserId(userId);
@@ -36,6 +46,12 @@ public class RequirementEntityService implements RequirementRepository {
     public Requirement findByUserId(String userId) {
         return null;
     }
+
+    @Override
+    public List<Requirement> findByUserIdAndProjectName(Long userId, String projectName) {
+        return requirementRepository.findByUserIdAndProjectName(userId, projectName);
+    }
+
 
     @Override
     public <S extends Requirement> S save(S entity) {
