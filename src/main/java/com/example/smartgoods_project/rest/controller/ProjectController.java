@@ -49,7 +49,7 @@ public class ProjectController {
         return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
     }
 
-    @Operation(summary = "Changes project name.", tags = {"Project"}, responses = {
+    /*@Operation(summary = "Changes project name.", tags = {"Project"}, responses = {
             @ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ResponseMessageDto.class))),
             @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
@@ -59,5 +59,19 @@ public class ProjectController {
             throws Exception, UserNotFoundException {
         projectRestService.updateProjectName(username, inboundUpdateProjectNameDto);
         return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
-    }
+    }*/
+
+    /*@Operation(summary = "Deletes project from the database.", tags = {"Project"}, responses = {
+            @ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ResponseMessageDto.class))),
+            @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
+    })
+    @DeleteMapping("/{username}/{id}")
+    public ResponseEntity<Object> deleteProject(@Param InboundCreateProjectRequestDto inboundCreateProjectRequestDto)
+            throws UserNotFoundException, ProjectAlreadyExistsException {
+        projectRestService.createProject(inboundCreateProjectRequestDto);
+        return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
+    }*/
+
+
 }

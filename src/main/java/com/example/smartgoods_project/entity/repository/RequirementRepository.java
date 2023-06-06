@@ -16,7 +16,7 @@ public interface RequirementRepository extends JpaRepository<Requirement, Long> 
 
     Requirement findByUserId(String userId);
 
-    List<Requirement> findByUserIdAndProjectName(Long userId, String projectName);
+    //List<Requirement> findByUserIdAndProjectName(Long userId, String projectName);
 
 
 }

@@ -16,10 +16,10 @@ public class SmartgoodsProjectApplication {
 
 	@Autowired
 	UserRepository userRepository;
-	@PostConstruct
+	/*@PostConstruct
 	private void initializer(){
 	userRepository.maker();
-	}
+	}*/
 	public static void main(String[] args) {
 		SpringApplication.run(SmartgoodsProjectApplication.class, args);
 	}

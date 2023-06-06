@@ -37,32 +37,31 @@ public class ProjectRestService {
     /**
      * Save requirment in the database
      *
-     * @param project
+     * @param projectName
      */
-    public boolean checkProjectExistance(String project) {
-        return projectEntityService.existsByProject(project);
+    public boolean checkProjectExistance(String projectName) {
+        return projectEntityService.existsByProject(projectName);
     }
 
     public void createProject(InboundCreateProjectRequestDto inboundCreateProjectRequestDto) throws UserNotFoundException, ProjectAlreadyExistsException {
         String username = inboundCreateProjectRequestDto.getUsername();
-        String project = inboundCreateProjectRequestDto.getProjectName();
+        String projectName = inboundCreateProjectRequestDto.getProjectName();
         User user;
-        Long userId;
+
         if (!userRestService.checkBoolUserExistence(username)) {
             throw new UserNotFoundException("This username from user is not found!");
         } else if (userRestService.checkBoolUserExistence(username)) {
             user = userEntityService.getUserByUsername(username);
-            userId = user.getId();
-            if (checkProjectExistance(project)) {
+            if (checkProjectExistance(projectName)) {
                 throw new ProjectAlreadyExistsException("This user have already this existing project");
             } else {
-                Project project1 = new Project(userId, project);
-                projectEntityService.save(project1);
+                Project newProject = new Project(user, projectName);
+                projectEntityService.save(newProject);
             }
         }
     }
 
-    public void updateProjectName(String username, InboundUpdateProjectNameDto inboundUpdateProjectNameDto) throws Exception, UserNotFoundException {
+    /*public void updateProjectName(String username, InboundUpdateProjectNameDto inboundUpdateProjectNameDto) throws Exception, UserNotFoundException {
         User user;
         Long userId;
 
@@ -79,6 +78,6 @@ public class ProjectRestService {
                 throw new Exception("Something went wrong while updating project name");
             }
             }
-    }
+    }*/
 
 }

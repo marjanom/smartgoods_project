@@ -1,6 +1,8 @@
 package com.example.smartgoods_project.entity.models;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,27 +20,25 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userIdentity;
-    private String projectName;
 
-    private String project;
+    private String projectName;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Requirement> requirements = new ArrayList<>();
 
-    private String requirement;
 
-    public Project(Long userIdentity, String projectName) {
-        this.userIdentity = userIdentity;
+    public Project(User user, String projectName) {
+        this.user = user;
         this.projectName = projectName;
     }
 
-    public Project(Long userIdentity, String projectName, String requirement) {
-        this.userIdentity = userIdentity;
+    public Project(User user, String projectName, Requirement requirement) {
+        this.user = user;
         this.projectName = projectName;
-        this.requirement = requirement;
+        this.requirements.add(requirement);
     }
 }

@@ -18,7 +18,7 @@ public class Requirement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
-    private String projectName;
+
     private String requirement;
     private boolean isRuppScheme;
 
@@ -27,9 +27,9 @@ public class Requirement {
     private Project project;
 
 
-    public Requirement(Long userId, String projectName, String requirement, boolean isRuppScheme) {
+    public Requirement(Long userId, Project project, String requirement, boolean isRuppScheme) {
         this.userId = userId;
-        this.projectName = projectName;
+        this.project = project;
         this.requirement = requirement;
         this.isRuppScheme = isRuppScheme;
 

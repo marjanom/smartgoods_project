@@ -15,9 +15,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     List<Project> findAllByUserId(@Param("userId") Long userId);
 
-    Project findByUserId(String userId);
+    Project findByProjectName(String projectName);
 
-    boolean existsByProject(String project);
+    boolean existsByProjectName(String projectName);
 
     @Query(value="UPDATE projects SET project = :newProjectName WHERE user_id = :userID AND project = :oldProjectName", nativeQuery = true)
     void updateProjectName(@Param("userID") Long userId,@Param("oldProjectName") String oldProjectName, @Param("newProjectName") String newProjectName);

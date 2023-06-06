@@ -2,6 +2,10 @@ package com.example.smartgoods_project.entity.models;
 
 import com.example.smartgoods_project.helper.Hashing;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +35,8 @@ public class User {
     private byte[] password;
     private byte[] salt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Project> projects = new ArrayList<>();
 
     public User(Long id, String username, String firstName, String lastName, int failedLoginCounter, String password) {
