@@ -81,7 +81,7 @@ public class RequirementController {
     public ResponseEntity<Object> delete(@PathVariable String id)
             throws RequirementNotExistsException {
         requirementRestService.removeRequirement(id);
-        return new ResponseEntity<>(new ResponseMessageDto("Requirment deleted."), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseMessageDto("Requirement was deleted successfully."), HttpStatus.OK);
     }
 
     /**

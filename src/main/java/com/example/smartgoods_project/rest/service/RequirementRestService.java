@@ -1,6 +1,7 @@
 package com.example.smartgoods_project.rest.service;
 
 
+import com.example.smartgoods_project.entity.models.Project;
 import com.example.smartgoods_project.entity.models.Requirement;
 import com.example.smartgoods_project.entity.models.User;
 import com.example.smartgoods_project.entity.service.ProjectEntityService;
@@ -151,7 +152,8 @@ public class RequirementRestService {
                 userId = user.getId();
                 log.info("hollllaaa");
                 isRuppScheme = checkIfRuppScheme(inboundRequirementRequestDto.getRequirement());
-                Requirement myProvedRequierement = new Requirement(userId, inboundRequirementRequestDto.getProjectName(), inboundRequirementRequestDto.getRequirement(), isRuppScheme);
+                Project project = projectEntityService.findProject(inboundRequirementRequestDto.getProjectName());
+                Requirement myProvedRequierement = new Requirement(userId,project, inboundRequirementRequestDto.getRequirement(), isRuppScheme);
                 //Project existingProject = new Project(userId, inboundRequirementRequestDto.getProjectName(), inboundRequirementRequestDto.getRequirement());
                 //log.info("hollllaaa222222");
                 Requirement requirement = requirementEntityService.save(myProvedRequierement);

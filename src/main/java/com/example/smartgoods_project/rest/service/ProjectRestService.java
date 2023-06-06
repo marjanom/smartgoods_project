@@ -8,9 +8,12 @@ import com.example.smartgoods_project.entity.service.ProjectEntityService;
 import com.example.smartgoods_project.entity.service.RequirementEntityService;
 import com.example.smartgoods_project.entity.service.UserEntityService;
 import com.example.smartgoods_project.exceptions.ProjectAlreadyExistsException;
+import com.example.smartgoods_project.exceptions.ProjectNotExistsException;
 import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
+import com.example.smartgoods_project.helper.IdentifierUtils;
 import com.example.smartgoods_project.rest.model.InboundCreateProjectRequestDto;
+import com.example.smartgoods_project.rest.model.InboundUpdateProjectNameDto;
 import com.example.smartgoods_project.rest.model.OutboundRequirementUserRequestDto;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,35 +33,64 @@ public class ProjectRestService {
     @NonNull UserRestService userRestService;
     @NonNull ProjectEntityService projectEntityService;
 
+    @NonNull IdentifierUtils identifierUtils;
+
     static final Logger log =
             LoggerFactory.getLogger(RequirementRestService.class);
 
     /**
      * Save requirment in the database
      *
-     * @param project
+     * @param projectName
      */
-    public boolean checkProjectExistance(String project) {
-        return projectEntityService.existsByProject(project);
+    public boolean checkProjectExistance(String projectName) {
+        return projectEntityService.existsByProject(projectName);
     }
 
     public void createProject(InboundCreateProjectRequestDto inboundCreateProjectRequestDto) throws UserNotFoundException, ProjectAlreadyExistsException {
         String username = inboundCreateProjectRequestDto.getUsername();
-        String project = inboundCreateProjectRequestDto.getProjectName();
+        String projectName = inboundCreateProjectRequestDto.getProjectName();
         User user;
-        Long userId;
+
         if (!userRestService.checkBoolUserExistence(username)) {
             throw new UserNotFoundException("This username from user is not found!");
         } else if (userRestService.checkBoolUserExistence(username)) {
             user = userEntityService.getUserByUsername(username);
-            userId = user.getId();
-            if (checkProjectExistance(project)) {
+            if (checkProjectExistance(projectName)) {
                 throw new ProjectAlreadyExistsException("This user have already this existing project");
             } else {
-                Project project1 = new Project(userId, project);
-                projectEntityService.save(project1);
+                Project newProject = new Project(user, projectName);
+                projectEntityService.save(newProject);
             }
         }
+    }
+
+    /*public void updateProjectName(String username, InboundUpdateProjectNameDto inboundUpdateProjectNameDto) throws Exception, UserNotFoundException {
+        User user;
+        Long userId;
+
+        if (!userRestService.checkBoolUserExistence(username)) {
+            throw new UserNotFoundException("This username from user is not found!");
+        } else if (userRestService.checkBoolUserExistence(username)) {
+            try {
+                user = userEntityService.getUserByUsername(username);
+                userId = user.getId();
+                requirementEntityService.updateProjectName(userId, inboundUpdateProjectNameDto.getOldProjectName(), inboundUpdateProjectNameDto.getNewProjectName());
+                projectEntityService.updateProjectName(userId, inboundUpdateProjectNameDto.getOldProjectName(), inboundUpdateProjectNameDto.getNewProjectName());
+
+            } catch(Exception ex){
+                throw new Exception("Something went wrong while updating project name");
+            }
+            }
+    }*/
+
+    public void deleteProject(String id) throws ProjectNotExistsException{
+        long projectId = Long.valueOf(id);
+        String projectName = identifierUtils.getProjectNameFromId(projectId);
+        if (!checkProjectExistance(projectName) || projectName.equals("")) {
+            throw new ProjectNotExistsException("This project doesn't exists.");
+        }
+        projectEntityService.deleteProject(projectId);
     }
 
 }

@@ -15,7 +15,7 @@ public class RequirementMapper {
         OutboundRequirmentResponseDto outboundRequirmentResponseDto = OutboundRequirmentResponseDto.builder()
                 .id(requirement.getId())
                 .username(username)
-                .projectName(requirement.getProjectName())
+                .projectName(requirement.getProject().getProjectName())
                 .requirement(requirement.getRequirement())
                 .isRuppScheme(requirement.isRuppScheme())
                 .build();
