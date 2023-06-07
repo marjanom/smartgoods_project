@@ -40,9 +40,9 @@ public class ProjectEntityService{
     }
 
 
-  /*  public void updateProjectName(Long userId, String oldProjectName, String newProjectName) {
+    public void updateProjectName(Long userId, String oldProjectName, String newProjectName) {
         projectRepository.updateProjectName(userId, oldProjectName, newProjectName);
-    }*/
+    }
 
     public Project findProject(String projectName){
         return projectRepository.findByProjectName(projectName);
@@ -50,6 +50,10 @@ public class ProjectEntityService{
 
     public Optional<Project> findProjectById(Long id){
         return projectRepository.findById(id);
+    }
+
+    public Project findProjectFromSpecificUser(Long userId, String projectName){
+        return projectRepository.findProjectFromSpecificUser(userId, projectName);
     }
 
     public void deleteProject(Long projectId){

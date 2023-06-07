@@ -27,16 +27,19 @@ public class RequirementEntityService {
     RequirementRepository requirementRepository;
 
 
-   /* public void updateProjectName(Long userId, String oldProjectName, String newProjectName){
-        List<Requirement> requirements = findByUserIdAndProjectName(userId, oldProjectName);
+   public void updateProjectName(Long userId, Long oldProjectId, String newProjectName){
+        List<Requirement> requirements = requirementRepository.findByUserIdAndProjectName(userId, oldProjectId);
 
         for (Requirement requirement : requirements) {
             String currentRequirement = requirement.getRequirement();
-            currentRequirement.replace(oldProjectName, newProjectName);
-            requirement.setRequirement(currentRequirement);
+            String oldProjectName = requirement.getProject().getProjectName();
+            System.out.println("Before update: " + currentRequirement);
+            currentRequirement = currentRequirement.replace(oldProjectName, newProjectName);
+            System.out.println("After update: " + currentRequirement);
+            //requirement.setRequirement(currentRequirement);
         }
 
-    }*/
+    }
 
     public List<Requirement> findAllByUserId(Long userId) {
         return requirementRepository.findAllByUserId(userId);

@@ -34,6 +34,21 @@ public class ProjectController {
 
     ProjectRestService projectRestService;
 
+
+    @Operation(summary = "Get all projects from database.", tags = {"Project"}, responses = {
+            @ApiResponse(description = "Created", responseCode = "200", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ResponseMessageDto.class))),
+            @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
+    })
+    @GetMapping("/{username}")
+    public ResponseEntity<Object> getAllProjects(@RequestBody InboundCreateProjectRequestDto inboundCreateProjectRequestDto)
+            throws UserNotFoundException, ProjectAlreadyExistsException {
+        projectRestService.createProject(inboundCreateProjectRequestDto);
+        return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
+    }
+
+
+
     /**
      * Save requirment in the database.
      *
@@ -51,17 +66,18 @@ public class ProjectController {
         return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
     }
 
-    /*@Operation(summary = "Changes project name.", tags = {"Project"}, responses = {
-            @ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json",
+    @Operation(summary = "Changes project name.", tags = {"Project"}, responses = {
+            @ApiResponse(description = "Updated", responseCode = "200", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ResponseMessageDto.class))),
-            @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
+            @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content),
+            @ApiResponse(description = "Project name could not be changed.", responseCode = "500", content = @Content)
     })
     @PutMapping("/{username}")
     public ResponseEntity<Object> updateProjectName(@PathVariable String username, @RequestBody InboundUpdateProjectNameDto inboundUpdateProjectNameDto)
             throws Exception, UserNotFoundException {
         projectRestService.updateProjectName(username, inboundUpdateProjectNameDto);
-        return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
-    }*/
+        return new ResponseEntity<>(new ResponseMessageDto("Project name changed successfully!"), HttpStatus.OK);
+    }
 
     @Operation(summary = "Deletes project from the database.", tags = {"Project"}, responses = {
             @ApiResponse(description = "Project Deleted", responseCode = "204"),

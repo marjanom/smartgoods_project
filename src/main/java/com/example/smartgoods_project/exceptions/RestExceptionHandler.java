@@ -49,6 +49,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ResponseMessageDto(e.getMessage()));
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleUpdateProjectNameFailure(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseMessageDto(e.getMessage()));
+    }
+
 
 
 

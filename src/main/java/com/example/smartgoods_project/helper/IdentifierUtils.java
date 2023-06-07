@@ -33,4 +33,11 @@ public class IdentifierUtils {
         }
         return "";
     }
+
+    public long getProjectIdFromName(Long userId, String projectName){
+        Long id;
+        Project project = projectEntityService.findProjectFromSpecificUser(userId, projectName);
+        id = project.getId();
+        return id;
+    }
 }

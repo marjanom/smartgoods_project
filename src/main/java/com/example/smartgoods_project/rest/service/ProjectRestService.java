@@ -65,24 +65,23 @@ public class ProjectRestService {
         }
     }
 
-    /*public void updateProjectName(String username, InboundUpdateProjectNameDto inboundUpdateProjectNameDto) throws Exception, UserNotFoundException {
-        User user;
+    public void updateProjectName(String username, InboundUpdateProjectNameDto inboundUpdateProjectNameDto) throws Exception, UserNotFoundException {
         Long userId;
+        Long projectId;
 
         if (!userRestService.checkBoolUserExistence(username)) {
             throw new UserNotFoundException("This username from user is not found!");
-        } else if (userRestService.checkBoolUserExistence(username)) {
+        } else {
             try {
-                user = userEntityService.getUserByUsername(username);
-                userId = user.getId();
-                requirementEntityService.updateProjectName(userId, inboundUpdateProjectNameDto.getOldProjectName(), inboundUpdateProjectNameDto.getNewProjectName());
+                userId = identifierUtils.getUserId(username);
+                projectId = identifierUtils.getProjectIdFromName(userId, inboundUpdateProjectNameDto.getOldProjectName());
                 projectEntityService.updateProjectName(userId, inboundUpdateProjectNameDto.getOldProjectName(), inboundUpdateProjectNameDto.getNewProjectName());
-
+                requirementEntityService.updateProjectName(userId, projectId, inboundUpdateProjectNameDto.getNewProjectName());
             } catch(Exception ex){
-                throw new Exception("Something went wrong while updating project name");
+                throw new Exception("Project name could not be changed");
             }
             }
-    }*/
+    }
 
     public void deleteProject(String id) throws ProjectNotExistsException{
         long projectId = Long.valueOf(id);
