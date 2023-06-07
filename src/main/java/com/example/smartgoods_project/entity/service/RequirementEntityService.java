@@ -3,6 +3,7 @@ package com.example.smartgoods_project.entity.service;
 import com.example.smartgoods_project.entity.models.Requirement;
 import com.example.smartgoods_project.entity.repository.RequirementRepository;
 import com.example.smartgoods_project.entity.repository.UserRepository;
+import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -41,15 +42,24 @@ public class RequirementEntityService {
 
     }
 
+    public Requirement editRequirement(Long id, String requirement) throws RequirementNotExistsException {
+       requirementRepository.updateRequirement(id, requirement);
+       Optional<Requirement> updatedRequirement = requirementRepository.findById(id);
+       if(updatedRequirement.isPresent()){
+           return updatedRequirement.get();
+       } else {
+           throw new RequirementNotExistsException("This requirement does not exist.");
+       }
+    }
+
     public List<Requirement> findAllByUserId(Long userId) {
         return requirementRepository.findAllByUserId(userId);
     }
 
-    /*@Override
-    public List<Requirement> findByUserIdAndProjectName(Long userId, String projectName) {
-        return requirementRepository.findByUserIdAndProjectName(userId, projectName);
-    }*/
 
+    public List<Requirement> findByUserIdAndProjectName(Long userId, Long projectId) {
+        return requirementRepository.findByUserIdAndProjectName(userId, projectId);
+    }
 
     public <S extends Requirement> S save(S entity) {
         return requirementRepository.save(entity);

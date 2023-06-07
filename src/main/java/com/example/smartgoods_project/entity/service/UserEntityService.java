@@ -33,7 +33,7 @@ public class UserEntityService {
         return userRepository.existsByUsername(username);
     }
 
-    public User getUserByUsername(String username) {
+    public User getUserByUsername(String username){
         return userRepository.findByUsername(username);
     }
 

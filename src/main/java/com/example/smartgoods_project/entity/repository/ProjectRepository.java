@@ -2,7 +2,6 @@ package com.example.smartgoods_project.entity.repository;
 
 
 import com.example.smartgoods_project.entity.models.Project;
-import com.example.smartgoods_project.entity.models.Requirement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
@@ -34,5 +34,10 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query(value="SELECT * FROM projects WHERE project_name = :projectName AND user_id = :userId", nativeQuery = true)
     Project findProjectFromSpecificUser(Long userId, String projectName);
 
+    @Query(value="SELECT * FROM projects WHERE user_id = :userId", nativeQuery = true)
+    List<Project> findAllProjects(Long userId);
+
+    @Query(value="SELECT * FROM projects WHERE user_id = :userId AND project_name = :projectName", nativeQuery = true)
+    Optional<Project> checkIfUserHasAlreadyProject(Long userId, String projectName);
 
 }

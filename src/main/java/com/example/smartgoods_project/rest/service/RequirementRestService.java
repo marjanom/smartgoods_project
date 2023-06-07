@@ -11,9 +11,7 @@ import com.example.smartgoods_project.exceptions.ProjectNotExistsException;
 import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
 import com.example.smartgoods_project.rest.mapper.RequirementMapper;
-import com.example.smartgoods_project.rest.model.InboundRequirementRequestDto;
-import com.example.smartgoods_project.rest.model.OutboundRequirementUserRequestDto;
-import com.example.smartgoods_project.rest.model.OutboundRequirmentResponseDto;
+import com.example.smartgoods_project.rest.model.*;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -24,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,6 +37,9 @@ public class RequirementRestService {
     @NonNull UserRestService userRestService;
     @NonNull ProjectRestService projectRestService;
     @NonNull ProjectEntityService projectEntityService;
+
+    @Autowired
+    RequirementMapper requirementMapper;
 
 
     static final Logger log =
@@ -165,52 +167,14 @@ public class RequirementRestService {
         return null;
     }
 
-
-/*
-    public void saveRequirement(String username, String requirement) throws UserNotFoundException, ProjectAlreadyExistsException {
-        User user;
-        Long userId;
-        boolean isRuppScheme = true;
-        if (!userRestService.checkBoolUserExistence(username)) {
-            throw new UserNotFoundException("This username from user is not found!");
-        } else if (userRestService.checkBoolUserExistence(username)) {
-            user = userEntityService.getUserByUsername(username);
-            userId = user.getId();
-            //Project project1 = new Project(userId, project);
-            isRuppScheme = checkIfRuppScheme(requirement);
-            Requirement requirement1 = new Requirement(userId, requirement, isRuppScheme);
-            //projectEntityService.save(project1);
-            requirementEntityService.save(requirement1);
-
-        }
+    public OutboundEditRequirementDto editRequirement(String id, InboundEditRequirementDto inboundEditRequirementDto) throws RequirementNotExistsException {
+        Long requirementId = Long.valueOf(id);
+        Requirement updatedRequirement = requirementEntityService.editRequirement(requirementId, inboundEditRequirementDto.getRequirement());
+        OutboundEditRequirementDto outboundEditRequirementDto = requirementMapper.DbResponseToDisplay(updatedRequirement);
+        return outboundEditRequirementDto;
     }
-*/
 
 
-/*    public void saveRequirement(String username, String project, String requirement) throws UserNotFoundException, ProjectNotExistsException {
-        User user = new User();
-        Long userId;
-        boolean isRuppScheme = true;
-        if (!projectRestService.checkProjectExistance(project)) {
-            throw new ProjectNotExistsException("This project doesn't exists.");
-        } else if (projectRestService.checkProjectExistance(project)) {
-            if (!userRestService.checkBoolUserExistence(username)) {
-                throw new UserNotFoundException("This username from user is not found!");
-
-            } else if (userRestService.checkBoolUserExistence(username)) {
-                user = userEntityService.getUserByUsername(username);
-                userId = user.getId();
-                log.info("hollllaaa");
-                isRuppScheme = checkIfRuppScheme(requirement);
-                Requirement myProvedRequierement = new Requirement(userId, project, requirement, isRuppScheme);
-                Project existingProject = new Project(userId, project, requirement);
-                log.info("hollllaaa222222");
-                requirementEntityService.save(myProvedRequierement);
-                projectEntityService.save(existingProject);
-
-            }
-        }
-    }*/
 
     private String labelPartsOfSpeech(String input){
         StringBuilder sentenceStructure = new StringBuilder();

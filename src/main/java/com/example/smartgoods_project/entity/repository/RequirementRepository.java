@@ -5,9 +5,11 @@ package com.example.smartgoods_project.entity.repository;
 import com.example.smartgoods_project.entity.models.Project;
 import com.example.smartgoods_project.entity.models.Requirement;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,6 +23,10 @@ public interface RequirementRepository extends JpaRepository<Requirement, Long> 
     @Query(value="SELECT * FROM requirements WHERE project_id = :projectId AND user_id = :userId", nativeQuery = true)
     List<Requirement> findByUserIdAndProjectName(Long userId, Long projectId);
 
+    @Transactional
+    @Modifying
+    @Query(value="UPDATE requirements SET requirement = :requirement WHERE id = :requirementId", nativeQuery = true)
+    Requirement updateRequirement(Long requirementId, String requirement);
 
 
 
