@@ -23,7 +23,7 @@ public class Project {
 
     private String projectName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)

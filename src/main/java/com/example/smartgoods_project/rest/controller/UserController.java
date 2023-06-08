@@ -24,7 +24,7 @@ import java.util.UUID;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("user")
+@RequestMapping("api/v2/users")
 @Tag(name = "User", description = "Endpoints for managing user")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserController {

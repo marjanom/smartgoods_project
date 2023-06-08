@@ -3,6 +3,7 @@ package com.example.smartgoods_project.entity.service;
 import com.example.smartgoods_project.entity.models.Requirement;
 import com.example.smartgoods_project.entity.repository.RequirementRepository;
 import com.example.smartgoods_project.entity.repository.UserRepository;
+import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -27,26 +28,39 @@ public class RequirementEntityService {
     RequirementRepository requirementRepository;
 
 
-   /* public void updateProjectName(Long userId, String oldProjectName, String newProjectName){
-        List<Requirement> requirements = findByUserIdAndProjectName(userId, oldProjectName);
+   public void updateProjectName(Long userId, Long oldProjectId, String newProjectName){
+        List<Requirement> requirements = requirementRepository.findByUserIdAndProjectName(userId, oldProjectId);
 
         for (Requirement requirement : requirements) {
             String currentRequirement = requirement.getRequirement();
-            currentRequirement.replace(oldProjectName, newProjectName);
-            requirement.setRequirement(currentRequirement);
+            String oldProjectName = requirement.getProject().getProjectName();
+            System.out.println("Before update: " + currentRequirement);
+            currentRequirement = currentRequirement.replace(oldProjectName, newProjectName);
+            System.out.println("After update: " + currentRequirement);
+            requirementRepository.updateRequirement(requirement.getId(), currentRequirement);
+            //requirement.setRequirement(currentRequirement);
         }
 
-    }*/
+    }
+
+    public Requirement editRequirement(Long id, String requirement) throws RequirementNotExistsException {
+       requirementRepository.updateRequirement(id, requirement);
+       Optional<Requirement> updatedRequirement = requirementRepository.findById(id);
+       if(updatedRequirement.isPresent()){
+           return updatedRequirement.get();
+       } else {
+           throw new RequirementNotExistsException("This requirement does not exist.");
+       }
+    }
 
     public List<Requirement> findAllByUserId(Long userId) {
         return requirementRepository.findAllByUserId(userId);
     }
 
-    /*@Override
-    public List<Requirement> findByUserIdAndProjectName(Long userId, String projectName) {
-        return requirementRepository.findByUserIdAndProjectName(userId, projectName);
-    }*/
 
+    public List<Requirement> findByUserIdAndProjectName(Long userId, Long projectId) {
+        return requirementRepository.findByUserIdAndProjectName(userId, projectId);
+    }
 
     public <S extends Requirement> S save(S entity) {
         return requirementRepository.save(entity);

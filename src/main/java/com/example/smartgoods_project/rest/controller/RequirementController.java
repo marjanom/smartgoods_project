@@ -25,8 +25,8 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
-@RequestMapping("requirement")
-@Tag(name = "Requirement", description = "Endpoints for managing requirment.")
+@RequestMapping("api/v2/requirements")
+@Tag(name = "Requirement", description = "Endpoints for managing requirments.")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class RequirementController {
 
@@ -60,26 +60,37 @@ public class RequirementController {
                     schema = @Schema(implementation = ResponseMessageDto.class))),
             @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content),
     })
-    @GetMapping("/list/all/{username}")
+    @GetMapping("/{username}")
     public ResponseEntity<List> list(@PathVariable String username)
             throws UserNotFoundException {
         List<OutboundRequirementUserRequestDto> outboundRequirementUserRequestDto = requirementRestService.listRequirements(username);
         return new ResponseEntity<>(outboundRequirementUserRequestDto, HttpStatus.OK);
     }
 
+    @Operation(summary = "Edit a requirement.", tags = {"Requirement"}, responses = {
+            @ApiResponse(description = "Edited", responseCode = "200", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = OutboundEditRequirementDto.class))),
+            @ApiResponse(description = "This requirement does not exist.", responseCode = "404", content = @Content),
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<OutboundEditRequirementDto> editRequirement(@PathVariable(value = "id") String requirementId,@RequestBody InboundUpdateRequirementDto inboundUpdateRequirementDto)
+            throws RequirementNotExistsException {
+        OutboundEditRequirementDto response = requirementRestService.editRequirement(requirementId, inboundUpdateRequirementDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
     /**
      * Delete requirment in the database.
      *
-     * @return Returns HTTP Created.
+     * @return Returns HTTP OK.
      */
-    @Operation(summary = "Delete requirment in the database.", tags = {"Requirement"}, responses = {
-            @ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = OutboundUserRegistrationDto.class))),
-            @ApiResponse(description = "Requirement not found.", responseCode = "409", content = @Content),
+    @Operation(summary = "Delete requirement in the database.", tags = {"Requirement"}, responses = {
+            @ApiResponse(description = "Deleted", responseCode = "200"),
+            @ApiResponse(description = "Requirement not found.", responseCode = "404", content = @Content),
     })
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Object> delete(@PathVariable String id)
-            throws RequirementNotExistsException {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> delete(@PathVariable String id) throws RequirementNotExistsException {
         requirementRestService.removeRequirement(id);
         return new ResponseEntity<>(new ResponseMessageDto("Requirement was deleted successfully."), HttpStatus.OK);
     }
@@ -89,14 +100,15 @@ public class RequirementController {
      *
      * @return Returns HTTP Created.
      */
-    @Operation(summary = "Check requirment according Rupp Scheme.", tags = {"Requirement"}, responses = {
-            @ApiResponse(description = "Checked", responseCode = "201", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = OutboundUserRegistrationDto.class))),
-            @ApiResponse(description = "Requirement not found.", responseCode = "409", content = @Content),
+    @Operation(summary = "Check requirement according Rupp Scheme.", tags = {"Requirement"}, responses = {
+            @ApiResponse(description = "OK", responseCode = "200", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = OutboundRuppSchemeResponseDto.class))),
+            @ApiResponse(description = "Error while processing this request.", responseCode = "500", content = @Content),
     })
     @PostMapping("/check")
-    public ResponseEntity<String> check(@Valid @RequestBody String requirment) {
-        return new ResponseEntity<>(requirementRestService.checkIfRuppSchemeToString(requirment), HttpStatus.OK);
+    public ResponseEntity<OutboundRuppSchemeResponseDto> check(@Valid @RequestBody String requirement) throws Exception {
+        OutboundRuppSchemeResponseDto outboundRuppSchemeResponseDto = requirementRestService.checkIfRuppSchemeNoDB(requirement);
+        return new ResponseEntity<>(outboundRuppSchemeResponseDto, HttpStatus.OK);
     }
 
 

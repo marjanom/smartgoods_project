@@ -1,6 +1,6 @@
 package com.example.smartgoods_project.exceptions;
 
-public class UserAlreadyExistsException extends Throwable {
+public class UserAlreadyExistsException extends Exception {
     public UserAlreadyExistsException(String message) {
         super(message);
     }

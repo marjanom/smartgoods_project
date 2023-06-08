@@ -32,20 +32,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ProjectAlreadyExistsException.class)
-    public ResponseEntity<?> handleMissingRequirement(ProjectAlreadyExistsException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ResponseMessageDto(e.getMessage()));
-    }
-
-    @ExceptionHandler(ProjectNotExistsException.class)
-    public ResponseEntity<?> handleMissingRequirement(ProjectNotExistsException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> handleProjectALreadyExists(ProjectAlreadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ResponseMessageDto(e.getMessage()));
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<?> handleUserCredentialsInvalid(AuthenticationException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ResponseMessageDto(e.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleUpdateProjectNameFailure(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ResponseMessageDto(e.getMessage()));
     }
 

@@ -3,6 +3,7 @@ package com.example.smartgoods_project.rest.mapper;
 import com.example.smartgoods_project.entity.models.Requirement;
 import com.example.smartgoods_project.entity.models.User;
 import com.example.smartgoods_project.rest.model.InboundUserRegistrationDto;
+import com.example.smartgoods_project.rest.model.OutboundEditRequirementDto;
 import com.example.smartgoods_project.rest.model.OutboundRequirmentResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -20,5 +21,13 @@ public class RequirementMapper {
                 .isRuppScheme(requirement.isRuppScheme())
                 .build();
         return outboundRequirmentResponseDto;
+    }
+
+    public OutboundEditRequirementDto DbResponseToDisplay(Requirement requirement) {
+        OutboundEditRequirementDto outboundEditRequirementDto = OutboundEditRequirementDto.builder()
+                .id(requirement.getId())
+                .requirement(requirement.getRequirement())
+                .build();
+        return outboundEditRequirementDto;
     }
 }

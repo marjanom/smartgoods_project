@@ -11,15 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.annotation.PostConstruct;
 
 @SpringBootApplication
-@OpenAPIDefinition(info = @Info(title = "User Management API", version = "0.1"))
+@OpenAPIDefinition(info = @Info(title = "Smartgoods Api", version = "2.0.0"))
 public class SmartgoodsProjectApplication {
 
-	@Autowired
-	UserRepository userRepository;
-	/*@PostConstruct
-	private void initializer(){
-	userRepository.maker();
-	}*/
+
 	public static void main(String[] args) {
 		SpringApplication.run(SmartgoodsProjectApplication.class, args);
 	}
