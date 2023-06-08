@@ -19,6 +19,7 @@ public class Requirement {
     private Long id;
     private Long userId;
 
+    @Column(length = 500)
     private String requirement;
     private boolean isRuppScheme;
 

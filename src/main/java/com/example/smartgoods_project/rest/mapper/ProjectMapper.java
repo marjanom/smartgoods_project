@@ -11,6 +11,7 @@ import org.mapstruct.MappingConstants;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,11 +19,11 @@ import java.util.Optional;
 @Component
 public class ProjectMapper {
 
-    public ProjectProjectionDto projectToProjectionDto(Project project){
+    public ProjectProjectionDto projectToProjectionDto(Project project, List<Requirement> requirements){
         ProjectProjectionDto projectProjectionDto = ProjectProjectionDto.builder()
                 .id(project.getId())
                 .projectName(project.getProjectName())
-                .userId(project.getUser().getId())
+                .requirements(requirementToProjectionDto(requirements))
                 .build();
         return projectProjectionDto;
     }
@@ -33,6 +34,17 @@ public class ProjectMapper {
                 .username(project.get().getUser().getUsername())
                 .projectName(project.get().getProjectName())
                 .requirements(requirementToProjectionDto(requirements))
+                .build();
+        return projectDisplayDto;
+    }
+
+    public ProjectDisplayDto projectToNewProjectDisplayDto (Project project){
+
+        ProjectDisplayDto projectDisplayDto = ProjectDisplayDto.builder()
+                .id(project.getId())
+                .username(project.getUser().getUsername())
+                .projectName(project.getProjectName())
+                .requirements(Collections.emptyList())
                 .build();
         return projectDisplayDto;
     }

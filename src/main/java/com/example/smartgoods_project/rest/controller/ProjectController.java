@@ -66,14 +66,14 @@ public class ProjectController {
      */
     @Operation(summary = "Create project in the database.", tags = {"Project"}, responses = {
             @ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ResponseMessageDto.class))),
-            @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content)
+                    schema = @Schema(implementation = ProjectDisplayDto.class))),
+            @ApiResponse(description = "The username does not exist!", responseCode = "404", content = @Content)
     })
     @PostMapping("")
-    public ResponseEntity<Object> create(@RequestBody InboundCreateProjectRequestDto inboundCreateProjectRequestDto)
+    public ResponseEntity<ProjectDisplayDto> createProject(@RequestBody InboundCreateProjectRequestDto inboundCreateProjectRequestDto)
             throws UserNotFoundException, ProjectAlreadyExistsException {
-        projectRestService.createProject(inboundCreateProjectRequestDto);
-        return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
+        ProjectDisplayDto response = projectRestService.createProject(inboundCreateProjectRequestDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(summary = "Changes project name.", tags = {"Project"}, responses = {

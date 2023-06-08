@@ -126,16 +126,46 @@ public class RequirementRestService {
         return false;
     }
 
+    public OutboundRuppSchemeResponseDto checkIfRuppSchemeNoDB(String requirement) throws Exception {
+
+        String input = requirement.toLowerCase();
+        String hint;
+        String sentenceStructure = labelPartsOfSpeech(requirement);
+        OutboundRuppSchemeResponseDto outboundRuppSchemeResponseDto = new OutboundRuppSchemeResponseDto();
+
+        try {
+            if (input.contains("shall") || input.contains("should") || input.contains("will")) {
+                if (input.contains("shall be able to") || input.contains("shall provide") && input.contains("the ability to")
+                        || input.contains("should be able to") || input.contains("should provide") && input.contains("the ability to")
+                        || input.contains("will be able to") || input.contains("will provide") && input.contains("the ability to")) {
+                    if (sentenceStructure.contains("VBJJTOVB") || sentenceStructure.contains("DTNNTOVB")) {
+                        outboundRuppSchemeResponseDto.setRuppScheme(true);
+                        outboundRuppSchemeResponseDto.setHint("");
+                        return outboundRuppSchemeResponseDto;
+                    } else {
+                        hint = "Process verb after key phrase (be able to/ provide <someone> the abiility to) is missing!";
+                        outboundRuppSchemeResponseDto.setHint(hint);
+                    }
+                } else {
+                    hint = "Key phrase (be able to, provide <someone> the ability to) is missing!";
+                    outboundRuppSchemeResponseDto.setHint(hint);
+                }
+            } else {
+                hint = "Keyword (shall, should, will) is missing!";
+                outboundRuppSchemeResponseDto.setHint(hint);
+            }
+            outboundRuppSchemeResponseDto.setRuppScheme(false);
+            return outboundRuppSchemeResponseDto;
+        }catch (Exception ex){
+            throw new Exception("Error while processing this request");
+        }
+    }
+
     /**
      * (String)Check requirment according Rupp Scheme.
      *
      * @param requirement
      */
-    public String checkIfRuppSchemeToString(String requirement) {
-        String isRuppScheme = String.valueOf(checkIfRuppScheme(requirement));
-        return isRuppScheme;
-    }
-
 
     public OutboundRequirmentResponseDto saveRequirement(InboundRequirementRequestDto inboundRequirementRequestDto) throws UserNotFoundException, ProjectNotExistsException {
         User user = new User();
@@ -144,22 +174,18 @@ public class RequirementRestService {
         Long userId;
         boolean isRuppScheme = true;
         if (!projectRestService.checkProjectExistance(inboundRequirementRequestDto.getProjectName())) {
-            throw new ProjectNotExistsException("This project doesn't exists.");
+            throw new ProjectNotExistsException("This project does not exists.");
         } else if (projectRestService.checkProjectExistance(inboundRequirementRequestDto.getProjectName())) {
             if (!userRestService.checkBoolUserExistence(username)) {
-                throw new UserNotFoundException("This username from user is not found!");
+                throw new UserNotFoundException("This username does not exist");
 
             } else if (userRestService.checkBoolUserExistence(username)) {
                 user = userEntityService.getUserByUsername(username);
                 userId = user.getId();
-                log.info("hollllaaa");
                 isRuppScheme = checkIfRuppScheme(inboundRequirementRequestDto.getRequirement());
                 Project project = projectEntityService.findProject(inboundRequirementRequestDto.getProjectName());
                 Requirement myProvedRequierement = new Requirement(userId,project, inboundRequirementRequestDto.getRequirement(), isRuppScheme);
-                //Project existingProject = new Project(userId, inboundRequirementRequestDto.getProjectName(), inboundRequirementRequestDto.getRequirement());
-                //log.info("hollllaaa222222");
                 Requirement requirement = requirementEntityService.save(myProvedRequierement);
-                //projectEntityService.save(existingProject);
                 OutboundRequirmentResponseDto outboundRequirmentResponseDto = mapper.DbResponseToResponseDto(requirement, username);
                 return outboundRequirmentResponseDto;
             }
@@ -167,9 +193,9 @@ public class RequirementRestService {
         return null;
     }
 
-    public OutboundEditRequirementDto editRequirement(String id, InboundEditRequirementDto inboundEditRequirementDto) throws RequirementNotExistsException {
+    public OutboundEditRequirementDto editRequirement(String id, InboundUpdateRequirementDto inboundUpdateRequirementDto) throws RequirementNotExistsException {
         Long requirementId = Long.valueOf(id);
-        Requirement updatedRequirement = requirementEntityService.editRequirement(requirementId, inboundEditRequirementDto.getRequirement());
+        Requirement updatedRequirement = requirementEntityService.editRequirement(requirementId, inboundUpdateRequirementDto.getRequirement());
         OutboundEditRequirementDto outboundEditRequirementDto = requirementMapper.DbResponseToDisplay(updatedRequirement);
         return outboundEditRequirementDto;
     }

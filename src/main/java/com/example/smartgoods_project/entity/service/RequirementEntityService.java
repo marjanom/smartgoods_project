@@ -37,6 +37,7 @@ public class RequirementEntityService {
             System.out.println("Before update: " + currentRequirement);
             currentRequirement = currentRequirement.replace(oldProjectName, newProjectName);
             System.out.println("After update: " + currentRequirement);
+            requirementRepository.updateRequirement(requirement.getId(), currentRequirement);
             //requirement.setRequirement(currentRequirement);
         }
 

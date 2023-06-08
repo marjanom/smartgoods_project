@@ -31,6 +31,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ResponseMessageDto(e.getMessage()));
     }
 
+    @ExceptionHandler(ProjectAlreadyExistsException.class)
+    public ResponseEntity<?> handleProjectALreadyExists(ProjectAlreadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ResponseMessageDto(e.getMessage()));
+    }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<?> handleUserCredentialsInvalid(AuthenticationException e) {

@@ -1,25 +1,20 @@
 package com.example.smartgoods_project.rest.model;
 
-import com.example.smartgoods_project.entity.models.Requirement;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
-@Builder
-public class ProjectProjectionDto {
+@NoArgsConstructor
+public class OutboundRuppSchemeResponseDto {
     @NotBlank
     @NotNull
-    Long id;
+    boolean isRuppScheme;
     @NotBlank
     @NotNull
-    String projectName;
-    @NotBlank
-    @NotNull
-    List<RequirementsProjectionDto> requirements;
+    String hint;
 }

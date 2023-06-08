@@ -1,8 +1,10 @@
 package com.example.smartgoods_project.entity.service;
 
 import com.example.smartgoods_project.entity.models.Project;
+import com.example.smartgoods_project.entity.models.Requirement;
 import com.example.smartgoods_project.entity.models.User;
 import com.example.smartgoods_project.entity.repository.ProjectRepository;
+import com.example.smartgoods_project.entity.repository.RequirementRepository;
 import com.example.smartgoods_project.exceptions.UserNotFoundException;
 import com.example.smartgoods_project.helper.IdentifierUtils;
 import com.example.smartgoods_project.rest.mapper.ProjectMapper;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +37,9 @@ public class ProjectEntityService{
     @Autowired
     UserEntityService userEntityService;
 
+    @Autowired
+    RequirementEntityService requirementEntityService;
+
 
 
     public <S extends Project> S save(S entity) {
@@ -43,9 +49,11 @@ public class ProjectEntityService{
     public List<ProjectProjectionDto> findAllProjects(Long userId){
         List<ProjectProjectionDto> allProjects = new ArrayList<>();
         List<Project> allProjectsFromDB = projectRepository.findAllProjects(userId);
+        List<Requirement> requirements = new ArrayList<>();
 
         for(Project project : allProjectsFromDB){
-            ProjectProjectionDto projectProjectionDto = projectMapper.projectToProjectionDto(project);
+            requirements = requirementEntityService.findByUserIdAndProjectName(userId, project.getId());
+            ProjectProjectionDto projectProjectionDto = projectMapper.projectToProjectionDto(project, requirements);
             allProjects.add(projectProjectionDto);
         }
 
@@ -65,6 +73,7 @@ public class ProjectEntityService{
         return projectRepository.findByProjectName(projectName);
     }
 
+    @Cacheable(value = "false")
     public Optional<Project> findProjectById(Long id){
         return projectRepository.findById(id);
     }

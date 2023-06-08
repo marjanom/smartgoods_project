@@ -18,10 +18,12 @@ import com.example.smartgoods_project.rest.model.ProjectDisplayDto;
 import com.example.smartgoods_project.rest.model.ProjectProjectionDto;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.apache.bcel.classfile.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,30 +40,34 @@ public class ProjectRestService {
     @NonNull ProjectMapper projectMapper;
     @NonNull IdentifierUtils identifierUtils;
 
-    public List<ProjectProjectionDto> getAllProjects(String username) throws UserNotFoundException{
+    public List<ProjectProjectionDto> getAllProjects(String username) throws UserNotFoundException {
         Long userId = identifierUtils.getUserId(username);
         List<ProjectProjectionDto> allProjects = projectEntityService.findAllProjects(userId);
         return allProjects;
     }
 
 
-    public void createProject(InboundCreateProjectRequestDto inboundCreateProjectRequestDto) throws UserNotFoundException, ProjectAlreadyExistsException {
+    public ProjectDisplayDto createProject(InboundCreateProjectRequestDto inboundCreateProjectRequestDto) throws UserNotFoundException, ProjectAlreadyExistsException {
         String username = inboundCreateProjectRequestDto.getUsername();
         String projectName = inboundCreateProjectRequestDto.getProjectName();
         User user;
 
         if (!userRestService.checkBoolUserExistence(username)) {
-            throw new UserNotFoundException("This username from user is not found!");
+            throw new UserNotFoundException("This username does not exist!");
         } else if (userRestService.checkBoolUserExistence(username)) {
             user = userEntityService.getUserByUsername(username);
             if (checkIfUserHasAlreadyProject(username, projectName)) {
-                throw new ProjectAlreadyExistsException("This user have already this existing project");
+                throw new ProjectAlreadyExistsException("This project already exists!");
             } else {
                 Project newProject = new Project(user, projectName);
-                projectEntityService.save(newProject);
+                Project savedProject = projectEntityService.save(newProject);
+                ProjectDisplayDto projectDisplayDto = projectMapper.projectToNewProjectDisplayDto(savedProject);
+                return projectDisplayDto;
             }
         }
+        return null;
     }
+
 
     public ProjectDisplayDto updateProjectName(String username, InboundUpdateProjectNameDto inboundUpdateProjectNameDto) throws Exception, UserNotFoundException {
         Long userId;
