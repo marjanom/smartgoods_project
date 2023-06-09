@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -26,6 +28,9 @@ import java.util.function.Function;
 public class RequirementEntityService {
 
     RequirementRepository requirementRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
 
    public void updateProjectName(Long userId, Long oldProjectId, String newProjectName){
@@ -45,6 +50,7 @@ public class RequirementEntityService {
 
     public Requirement editRequirement(Long id, String requirement) throws RequirementNotExistsException {
        requirementRepository.updateRequirement(id, requirement);
+       entityManager.clear();
        Optional<Requirement> updatedRequirement = requirementRepository.findById(id);
        if(updatedRequirement.isPresent()){
            return updatedRequirement.get();
