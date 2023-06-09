@@ -21,8 +21,11 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.apache.bcel.classfile.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +42,8 @@ public class ProjectRestService {
     @NonNull ProjectEntityService projectEntityService;
     @NonNull ProjectMapper projectMapper;
     @NonNull IdentifierUtils identifierUtils;
+    @Autowired
+    private EntityManager entityManager;
 
     public List<ProjectProjectionDto> getAllProjects(String username) throws UserNotFoundException {
         Long userId = identifierUtils.getUserId(username);
@@ -81,6 +86,7 @@ public class ProjectRestService {
                 projectId = identifierUtils.getProjectIdFromName(userId, inboundUpdateProjectNameDto.getOldProjectName());
                 projectEntityService.updateProjectName(userId, inboundUpdateProjectNameDto.getOldProjectName(), inboundUpdateProjectNameDto.getNewProjectName());
                 requirementEntityService.updateProjectName(userId, projectId, inboundUpdateProjectNameDto.getNewProjectName());
+                entityManager.clear();
                 List<Requirement> requirements = requirementEntityService.findByUserIdAndProjectName(userId, projectId);
                 Optional<Project> renamedProject = projectEntityService.findProjectById(projectId);
                 ProjectDisplayDto project = projectMapper.projectToDisplayDto(renamedProject, requirements);

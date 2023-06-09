@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -73,7 +74,6 @@ public class ProjectEntityService{
         return projectRepository.findByProjectName(projectName);
     }
 
-    @Cacheable(value = "false")
     public Optional<Project> findProjectById(Long id){
         return projectRepository.findById(id);
     }
