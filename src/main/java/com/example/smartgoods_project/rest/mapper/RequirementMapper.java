@@ -19,6 +19,7 @@ public class RequirementMapper {
                 .projectName(requirement.getProject().getProjectName())
                 .requirement(requirement.getRequirement())
                 .isRuppScheme(requirement.isRuppScheme())
+                .hint(requirement.getHint())
                 .build();
         return outboundRequirmentResponseDto;
     }
@@ -27,6 +28,8 @@ public class RequirementMapper {
         OutboundEditRequirementDto outboundEditRequirementDto = OutboundEditRequirementDto.builder()
                 .id(requirement.getId())
                 .requirement(requirement.getRequirement())
+                .isRuppScheme(requirement.isRuppScheme())
+                .hint(requirement.getHint())
                 .build();
         return outboundEditRequirementDto;
     }

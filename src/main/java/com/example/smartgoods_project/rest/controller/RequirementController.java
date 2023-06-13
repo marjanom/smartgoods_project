@@ -49,24 +49,6 @@ public class RequirementController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
-    /**
-     * List all requirments from the database.
-     *
-     * @return List of all requirements.
-     */
-    @Operation(summary = "List all requirements.", tags = {"Requirement"}, responses = {
-            @ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ResponseMessageDto.class))),
-            @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content),
-    })
-    @GetMapping("/{username}")
-    public ResponseEntity<List> list(@PathVariable String username)
-            throws UserNotFoundException {
-        List<OutboundRequirementUserRequestDto> outboundRequirementUserRequestDto = requirementRestService.listRequirements(username);
-        return new ResponseEntity<>(outboundRequirementUserRequestDto, HttpStatus.OK);
-    }
-
     @Operation(summary = "Edit a requirement.", tags = {"Requirement"}, responses = {
             @ApiResponse(description = "Edited", responseCode = "200", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = OutboundEditRequirementDto.class))),
@@ -106,9 +88,9 @@ public class RequirementController {
             @ApiResponse(description = "Error while processing this request.", responseCode = "500", content = @Content),
     })
     @PostMapping("/check")
-    public ResponseEntity<OutboundRuppSchemeResponseDto> check(@Valid @RequestBody String requirement) throws Exception {
-        OutboundRuppSchemeResponseDto outboundRuppSchemeResponseDto = requirementRestService.checkIfRuppSchemeNoDB(requirement);
-        return new ResponseEntity<>(outboundRuppSchemeResponseDto, HttpStatus.OK);
+    public ResponseEntity<RequirementAttribute> check(@Valid @RequestBody String requirement) throws Exception {
+        RequirementAttribute attributes = requirementRestService.checkIfRuppScheme(requirement);
+        return new ResponseEntity<>(attributes, HttpStatus.OK);
     }
 
 

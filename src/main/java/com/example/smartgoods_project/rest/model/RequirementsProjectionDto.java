@@ -21,5 +21,9 @@ public class RequirementsProjectionDto {
     @NotNull
     String requirement;
 
+    @NotBlank
+    @NotNull
+    String hint;
+
 
 }

@@ -13,4 +13,11 @@ public class OutboundUserLoginResponseDto {
     @NotBlank
     @NotNull
     String username;
+
+    @NotBlank
+    @NotNull
+    String firstName;
+    @NotBlank
+    @NotNull
+    String lastName;
 }

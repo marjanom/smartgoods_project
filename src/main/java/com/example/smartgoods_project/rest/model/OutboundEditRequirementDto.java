@@ -17,4 +17,14 @@ public class OutboundEditRequirementDto {
     @NotBlank
     @NonNull
     String requirement;
+
+    @NotBlank
+    @NonNull
+    boolean isRuppScheme;
+
+    @NotBlank
+    @NonNull
+    String hint;
+
+
 }

@@ -34,4 +34,8 @@ public class OutboundRequirmentResponseDto {
     @NonNull
     boolean isRuppScheme;
 
+    @NotBlank
+    @NonNull
+    String hint;
+
 }

@@ -44,21 +44,6 @@ public class ProjectController {
         return new ResponseEntity<>(allProjects, HttpStatus.OK);
     }
 
-    /*@Operation(summary = "Get all requirements from project.", tags = {"Project"}, responses = {
-            @ApiResponse(description = "Created", responseCode = "200", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ResponseMessageDto.class))),
-            @ApiResponse(description = "Username not found.", responseCode = "404", content = @Content),
-            @ApiResponse(description = "Project not found.", responseCode = "404", content = @Content)
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getAllRequirementsFromProject(@RequestBody InboundCreateProjectRequestDto inboundCreateProjectRequestDto)
-            throws UserNotFoundException, ProjectAlreadyExistsException {
-        projectRestService.createProject(inboundCreateProjectRequestDto);
-        return new ResponseEntity<>(new ResponseMessageDto("Project succesfully saved."), HttpStatus.OK);
-    }*/
-
-
-
     /**
      * Save requirment in the database.
      *

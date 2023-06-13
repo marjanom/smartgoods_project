@@ -4,6 +4,7 @@ import com.example.smartgoods_project.entity.models.Requirement;
 import com.example.smartgoods_project.entity.repository.RequirementRepository;
 import com.example.smartgoods_project.entity.repository.UserRepository;
 import com.example.smartgoods_project.exceptions.RequirementNotExistsException;
+import com.example.smartgoods_project.rest.model.RequirementAttribute;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -48,8 +49,8 @@ public class RequirementEntityService {
 
     }
 
-    public Requirement editRequirement(Long id, String requirement) throws RequirementNotExistsException {
-       requirementRepository.updateRequirement(id, requirement);
+    public Requirement editRequirement(Long id, String requirement, RequirementAttribute attributes) throws RequirementNotExistsException {
+       requirementRepository.updateRequirementWithAttributes(id, requirement, attributes.isRuppScheme(), attributes.getHint());
        entityManager.clear();
        Optional<Requirement> updatedRequirement = requirementRepository.findById(id);
        if(updatedRequirement.isPresent()){
