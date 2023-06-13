@@ -57,6 +57,7 @@ public class ProjectMapper {
                     .id(requirement.getId())
                     .isRuppScheme(String.valueOf(requirement.isRuppScheme()))
                     .requirement(requirement.getRequirement())
+                    .hint(requirement.getHint())
                     .build();
             allRequirements.add(requirementsProjectionDto);
         }

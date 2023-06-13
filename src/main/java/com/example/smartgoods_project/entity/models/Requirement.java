@@ -21,6 +21,9 @@ public class Requirement {
 
     @Column(length = 500)
     private String requirement;
+
+    @Column(length = 500)
+    String hint;
     private boolean isRuppScheme;
 
     @ManyToOne
@@ -28,11 +31,12 @@ public class Requirement {
     private Project project;
 
 
-    public Requirement(Long userId, Project project, String requirement, boolean isRuppScheme) {
+    public Requirement(Long userId, Project project, String requirement, boolean isRuppScheme, String hint) {
         this.userId = userId;
         this.project = project;
         this.requirement = requirement;
         this.isRuppScheme = isRuppScheme;
+        this.hint = hint;
 
     }
 

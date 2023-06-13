@@ -1,5 +1,6 @@
 package com.example.smartgoods_project.rest.controller;
 
+import com.example.smartgoods_project.entity.models.User;
 import com.example.smartgoods_project.exceptions.*;
 import com.example.smartgoods_project.rest.model.*;
 import com.example.smartgoods_project.rest.service.UserRestService;
@@ -49,12 +50,13 @@ public class UserController {
     @PostMapping("/login")
     @Operation(summary = "Login a user.", tags = {"User"}, responses = {@ApiResponse(description = "OK", responseCode = "200", content = @Content(mediaType = "application/json",
             schema = @Schema(implementation = OutboundUserLoginResponseDto.class))), @ApiResponse(description = "User locked", responseCode = "401", content = @Content), @ApiResponse(description = "User or password is invalid", responseCode = "401", content = @Content)})
-    public ResponseEntity<OutboundUserLoginResponseDto> login(@RequestBody @Valid InboundUserLoginDto inboundUserLoginDto, HttpSession session) throws AuthenticationException, UserLockedException {
+    public ResponseEntity<OutboundUserLoginResponseDto> login(@RequestBody @Valid InboundUserLoginDto inboundUserLoginDto, HttpSession session) throws AuthenticationException, UserLockedException, UserNotFoundException {
 
         UUID sessionID = UUID.randomUUID();
         session.setAttribute(sessionIdName, sessionID);
         userRestService.login(inboundUserLoginDto.getUsername(), inboundUserLoginDto.getPassword(), sessionID);
-        OutboundUserLoginResponseDto response = new OutboundUserLoginResponseDto(inboundUserLoginDto.getUsername());
+        User user= userRestService.checkUserExistence(inboundUserLoginDto.getUsername());
+        OutboundUserLoginResponseDto response = new OutboundUserLoginResponseDto(user.getUsername(), user.getFirstName(),user.getLastName());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
