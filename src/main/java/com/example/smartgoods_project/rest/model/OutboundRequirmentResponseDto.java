@@ -38,4 +38,12 @@ public class OutboundRequirmentResponseDto {
     @NonNull
     String hint;
 
+    @NotBlank
+    @NonNull
+    String mistake;
+
+    @NotBlank
+    @NonNull
+    String suggestion;
+
 }

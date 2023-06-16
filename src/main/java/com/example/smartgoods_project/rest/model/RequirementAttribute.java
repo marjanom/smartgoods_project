@@ -12,4 +12,8 @@ public class RequirementAttribute {
 
     boolean isRuppScheme;
     String hint;
+
+    String mistake;
+
+    String suggestion;
 }

@@ -20,11 +20,15 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 
+import org.languagetool.JLanguageTool;
+import org.languagetool.language.AmericanEnglish;
+import org.languagetool.rules.RuleMatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,13 +115,14 @@ public class RequirementRestService {
      * @param requirement
      */
 
-    public OutboundRequirmentResponseDto saveRequirement(InboundRequirementRequestDto inboundRequirementRequestDto) throws UserNotFoundException, ProjectNotExistsException {
+    public OutboundRequirmentResponseDto saveRequirement(InboundRequirementRequestDto inboundRequirementRequestDto) throws UserNotFoundException, ProjectNotExistsException, IOException {
         User user = new User();
         RequirementMapper mapper = new RequirementMapper();
         String username = inboundRequirementRequestDto.getUsername();
         Long userId;
         boolean isRuppScheme = true;
         RequirementAttribute attributes = null;
+        RequirementAttribute spellingAttributes = null;
         if (!projectRestService.checkProjectExistance(inboundRequirementRequestDto.getProjectName())) {
             throw new ProjectNotExistsException("This project does not exists.");
         } else if (projectRestService.checkProjectExistance(inboundRequirementRequestDto.getProjectName())) {
@@ -128,8 +133,9 @@ public class RequirementRestService {
                 user = userEntityService.getUserByUsername(username);
                 userId = user.getId();
                 attributes = checkIfRuppScheme(inboundRequirementRequestDto.getRequirement());
+                spellingAttributes = checkForMistakes(inboundRequirementRequestDto.getRequirement());
                 Project project = projectEntityService.findProject(inboundRequirementRequestDto.getProjectName());
-                Requirement myProvedRequierement = new Requirement(userId,project, inboundRequirementRequestDto.getRequirement(), attributes.isRuppScheme(), attributes.getHint());
+                Requirement myProvedRequierement = new Requirement(userId,project, inboundRequirementRequestDto.getRequirement(), attributes.isRuppScheme(), attributes.getHint(), spellingAttributes.getMistake(), spellingAttributes.getSuggestion());
                 Requirement requirement = requirementEntityService.save(myProvedRequierement);
                 OutboundRequirmentResponseDto outboundRequirmentResponseDto = mapper.DbResponseToResponseDto(requirement, username);
                 return outboundRequirmentResponseDto;
@@ -138,10 +144,11 @@ public class RequirementRestService {
         return null;
     }
 
-    public OutboundEditRequirementDto editRequirement(String id, InboundUpdateRequirementDto inboundUpdateRequirementDto) throws RequirementNotExistsException {
+    public OutboundEditRequirementDto editRequirement(String id, InboundUpdateRequirementDto inboundUpdateRequirementDto) throws RequirementNotExistsException, IOException {
         Long requirementId = Long.valueOf(id);
         RequirementAttribute attributes = checkIfRuppScheme(inboundUpdateRequirementDto.getRequirement());
-        Requirement updatedRequirement = requirementEntityService.editRequirement(requirementId, inboundUpdateRequirementDto.getRequirement(), attributes);
+        RequirementAttribute spellingAttributes = checkForMistakes(inboundUpdateRequirementDto.getRequirement());
+        Requirement updatedRequirement = requirementEntityService.editRequirement(requirementId, inboundUpdateRequirementDto.getRequirement(), attributes, spellingAttributes);
         OutboundEditRequirementDto outboundEditRequirementDto = requirementMapper.DbResponseToDisplay(updatedRequirement);
         return outboundEditRequirementDto;
     }
@@ -163,5 +170,27 @@ public class RequirementRestService {
             //System.out.println(coreLabel.originalText() + "=" + pos);
         }
         return sentenceStructure.toString();
+    }
+
+    public RequirementAttribute checkForMistakes(String requirement) throws IOException {
+        RequirementAttribute attributes = new RequirementAttribute();
+        String mistake;
+        String suggestion;
+        JLanguageTool langTool = new JLanguageTool(new AmericanEnglish());
+
+        List<RuleMatch> matches = langTool.check(requirement);
+        if(matches.size() > 0) {
+            mistake = "Potential mistake at characters " +
+                    matches.get(0).getFromPos() + "-" + matches.get(0).getToPos() + ": " +
+                    matches.get(0).getMessage();
+            suggestion = "Suggested correction(s):  " +
+                    matches.get(0).getSuggestedReplacements();
+        } else {
+            mistake = "";
+            suggestion = "";
+        }
+        attributes.setMistake(mistake);
+        attributes.setSuggestion(suggestion);
+        return attributes;
     }
 }

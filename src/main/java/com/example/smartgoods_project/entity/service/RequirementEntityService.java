@@ -49,8 +49,8 @@ public class RequirementEntityService {
 
     }
 
-    public Requirement editRequirement(Long id, String requirement, RequirementAttribute attributes) throws RequirementNotExistsException {
-       requirementRepository.updateRequirementWithAttributes(id, requirement, attributes.isRuppScheme(), attributes.getHint());
+    public Requirement editRequirement(Long id, String requirement, RequirementAttribute attributes, RequirementAttribute spellingAttributes) throws RequirementNotExistsException {
+       requirementRepository.updateRequirementWithAttributes(id, requirement, attributes.isRuppScheme(), attributes.getHint(), spellingAttributes.getMistake(), spellingAttributes.getSuggestion());
        entityManager.clear();
        Optional<Requirement> updatedRequirement = requirementRepository.findById(id);
        if(updatedRequirement.isPresent()){

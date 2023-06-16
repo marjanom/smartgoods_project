@@ -25,5 +25,12 @@ public class RequirementsProjectionDto {
     @NotNull
     String hint;
 
+    @NotBlank
+    @NotNull
+    String mistake;
+
+    @NotBlank
+    @NotNull
+    String suggestion;
 
 }

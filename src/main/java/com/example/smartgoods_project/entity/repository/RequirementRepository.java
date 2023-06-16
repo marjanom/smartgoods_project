@@ -30,8 +30,8 @@ public interface RequirementRepository extends JpaRepository<Requirement, Long> 
 
     @Transactional
     @Modifying
-    @Query(value="UPDATE requirements SET requirement = :requirement, is_rupp_scheme = :isRupp, hint = :givenHint WHERE id = :requirementId", nativeQuery = true)
-    void updateRequirementWithAttributes(Long requirementId, String requirement, boolean isRupp, String givenHint);
+    @Query(value="UPDATE requirements SET requirement = :requirement, is_rupp_scheme = :isRupp, hint = :givenHint, mistake = :givenMistake, suggestion = :givenSuggestion WHERE id = :requirementId", nativeQuery = true)
+    void updateRequirementWithAttributes(Long requirementId, String requirement, boolean isRupp, String givenHint, String givenMistake, String givenSuggestion);
 
 
 

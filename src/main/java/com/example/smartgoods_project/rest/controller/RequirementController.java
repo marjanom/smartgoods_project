@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -44,7 +45,7 @@ public class RequirementController {
     })
     @PostMapping("")
     public ResponseEntity<OutboundRequirmentResponseDto> insert(@RequestBody InboundRequirementRequestDto inboundRequirementRequestDto)
-            throws UserNotFoundException, ProjectNotExistsException {
+            throws UserNotFoundException, ProjectNotExistsException, IOException {
         OutboundRequirmentResponseDto response = requirementRestService.saveRequirement(inboundRequirementRequestDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -56,7 +57,7 @@ public class RequirementController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<OutboundEditRequirementDto> editRequirement(@PathVariable(value = "id") String requirementId,@RequestBody InboundUpdateRequirementDto inboundUpdateRequirementDto)
-            throws RequirementNotExistsException {
+            throws RequirementNotExistsException, IOException {
         OutboundEditRequirementDto response = requirementRestService.editRequirement(requirementId, inboundUpdateRequirementDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -90,6 +91,9 @@ public class RequirementController {
     @PostMapping("/check")
     public ResponseEntity<RequirementAttribute> check(@Valid @RequestBody String requirement) throws Exception {
         RequirementAttribute attributes = requirementRestService.checkIfRuppScheme(requirement);
+        RequirementAttribute spellingAttributes = requirementRestService.checkForMistakes(requirement);
+        attributes.setMistake(spellingAttributes.getMistake());
+        attributes.setSuggestion(spellingAttributes.getSuggestion());
         return new ResponseEntity<>(attributes, HttpStatus.OK);
     }
 

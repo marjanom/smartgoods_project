@@ -58,6 +58,8 @@ public class ProjectMapper {
                     .isRuppScheme(String.valueOf(requirement.isRuppScheme()))
                     .requirement(requirement.getRequirement())
                     .hint(requirement.getHint())
+                    .mistake(requirement.getMistake())
+                    .suggestion(requirement.getSuggestion())
                     .build();
             allRequirements.add(requirementsProjectionDto);
         }

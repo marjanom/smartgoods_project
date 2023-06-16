@@ -20,6 +20,8 @@ public class RequirementMapper {
                 .requirement(requirement.getRequirement())
                 .isRuppScheme(requirement.isRuppScheme())
                 .hint(requirement.getHint())
+                .mistake(requirement.getMistake())
+                .suggestion(requirement.getSuggestion())
                 .build();
         return outboundRequirmentResponseDto;
     }
@@ -30,6 +32,8 @@ public class RequirementMapper {
                 .requirement(requirement.getRequirement())
                 .isRuppScheme(requirement.isRuppScheme())
                 .hint(requirement.getHint())
+                .mistake(requirement.getMistake())
+                .suggestion(requirement.getSuggestion())
                 .build();
         return outboundEditRequirementDto;
     }

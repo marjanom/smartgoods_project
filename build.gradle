@@ -47,6 +47,12 @@ dependencies {
 	//stanford corenlp - check for updated versions on https://stanfordnlp.github.io/CoreNLP/index.html if not working
 	implementation 'edu.stanford.nlp:stanford-corenlp:4.5.4'
 	implementation 'edu.stanford.nlp:stanford-corenlp:4.5.4:models'
+
+	//language tool https://dev.languagetool.org/java-api.html
+	implementation 'org.languagetool:language-en:6.1'
+
+	// https://mvnrepository.com/artifact/com.google.guava/guava
+	implementation("com.google.guava:guava:32.0.1-jre")
 }
 
 tasks.named('test') {
