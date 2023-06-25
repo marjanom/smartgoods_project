@@ -42,8 +42,11 @@ public class UserController {
 
     @Operation(summary = "Creates a user in the database.", tags = {"User"}, responses = {@ApiResponse(description = "Created", responseCode = "201", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OutboundUserRegistrationResponseDto.class))), @ApiResponse(description = "The username is already taken", responseCode = "409", content = @Content)})
     @PostMapping("/register")
-    public ResponseEntity<OutboundUserRegistrationResponseDto> register(@Valid @RequestBody InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException{
+    public ResponseEntity<OutboundUserRegistrationResponseDto> register(@Valid @RequestBody InboundUserRegistrationDto inboundUserRegistrationDto, HttpSession session) throws UserAlreadyExistsException, UserLockedException, AuthenticationException {
         OutboundUserRegistrationResponseDto response = userRestService.createUser(inboundUserRegistrationDto);
+        UUID sessionID = UUID.randomUUID();
+        session.setAttribute(sessionIdName, sessionID);
+        userRestService.login(inboundUserRegistrationDto.getUsername(), inboundUserRegistrationDto.getPassword(), sessionID);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
