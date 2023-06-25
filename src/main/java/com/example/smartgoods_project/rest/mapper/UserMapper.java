@@ -31,28 +31,4 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .build();
     }
-
 }
-
-
-
-
-
-/*
-@Component
-public class UserMapper {
-
-
-    public InboundUserRegistrationDto convertEntityToDto(User user) {
-        ModelMapper modelMapper = new ModelMapper();
-        InboundUserRegistrationDto inboundUserRegistrationDto = modelMapper.map(user, InboundUserRegistrationDto.class);
-        return inboundUserRegistrationDto;
-
-    }
-
-    public User convertDtoToEntity(InboundUserRegistrationDto inboundUserRegistrationDto) {
-        ModelMapper modelMapper = new ModelMapper();
-        User user = modelMapper.map(inboundUserRegistrationDto, User.class);
-        return user;
-    }
-*/

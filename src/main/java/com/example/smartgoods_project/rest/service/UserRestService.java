@@ -193,6 +193,7 @@ public class UserRestService {
      */
 
     public OutboundUserRegistrationResponseDto createUser(InboundUserRegistrationDto inboundUserRegistrationDto) throws UserAlreadyExistsException {
+        User user = null;
         OutboundUserRegistrationDto outboundUserRegistrationDto = userEntityService.addUser(inboundUserRegistrationDto);
         OutboundUserRegistrationResponseDto response = new OutboundUserRegistrationResponseDto(
                 outboundUserRegistrationDto.getUsername(),
