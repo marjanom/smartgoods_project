@@ -37,7 +37,6 @@ public class RequirementRestService {
     @NonNull UserRestService userRestService;
     @NonNull ProjectRestService projectRestService;
     @NonNull ProjectEntityService projectEntityService;
-
     @Autowired
     RequirementMapper requirementMapper;
 
@@ -75,41 +74,47 @@ public class RequirementRestService {
      * @param requirement
      */
     public RequirementAttribute checkIfRuppScheme(String requirement) {
-
         String input = requirement.toLowerCase();
         String hint;
         String sentenceStructure = labelPartsOfSpeech(requirement);
         RequirementAttribute attributes = new RequirementAttribute();
 
-        if (input.contains("shall") || input.contains("should") || input.contains("will")) {
-            if (input.contains("shall be able to") || input.contains("shall provide") && input.contains("the ability to")
-                    || input.contains("should be able to") || input.contains("should provide") && input.contains("the ability to")
-                    || input.contains("will be able to") || input.contains("will provide") && input.contains("the ability to")) {
-                if(sentenceStructure.contains("VBJJTOVB") || sentenceStructure.contains("DTNNTOVB")){
+        if (input.contains("shall") || input.contains("should") || input.contains("will") ||
+                input.contains("shall not") || input.contains("should not") || input.contains("will not") ||
+                input.contains("won't")|| input.contains("wont")) {
+            if (input.contains("shall be able to") || input.contains("shall not be able to") || input.contains("shall provide") && input.contains("the ability to") || input.contains("shall not provide") && input.contains("the ability to") ||
+                    input.contains("should be able to") || input.contains("should not be able to") || input.contains("should provide") && input.contains("the ability to") || input.contains("should not provide") && input.contains("the ability to") ||
+                    input.contains("will be able to") || input.contains("will not be able to") || input.contains("wont be able to") || input.contains("won't be able to") ||
+                    input.contains("will provide") && input.contains("the ability to") || input.contains("will not provide") && input.contains("the ability to") || input.contains("wont provide") && input.contains("the ability to") || input.contains("won't provide") && input.contains("the ability to")) {
+                if(sentenceStructure.contains("VBJJTOVB") ||  sentenceStructure.contains("DTNNTOVB")){
                     attributes.setRuppScheme(true);
                     attributes.setHint("");
                     return attributes;
                 } else {
                     hint = "Process verb after key phrase (be able to/ provide <someone> the abiility to) is missing!";
                     attributes.setHint(hint);
+                    attributes.setRuppScheme(false);
+                    return attributes;
                 }
             } else {
-                hint = "Key phrase (be able to, provide <someone> the ability to) is missing!";
-                attributes.setHint(hint);
+                if(sentenceStructure.contains("MDVB") || sentenceStructure.contains("MDRBVB")){
+                    attributes.setRuppScheme(true);
+                    attributes.setHint("");
+                    return attributes;
+                } else {
+                    hint = "Process verb or key phrase (be able to/ provide <someone> the ability to) is missing!";
+                    attributes.setHint(hint);
+                    attributes.setRuppScheme(false);
+                    return attributes;
+                }
             }
         } else {
             hint = "Keyword (shall, should, will) is missing!";
             attributes.setHint(hint);
+            attributes.setRuppScheme(false);
+            return attributes;
         }
-        attributes.setRuppScheme(false);
-        return attributes;
     }
-
-    /**
-     * (String)Check requirment according Rupp Scheme.
-     *
-     * @param requirement
-     */
 
     public OutboundRequirmentResponseDto saveRequirement(InboundRequirementRequestDto inboundRequirementRequestDto) throws UserNotFoundException, ProjectNotExistsException {
         User user = new User();
@@ -146,8 +151,6 @@ public class RequirementRestService {
         return outboundEditRequirementDto;
     }
 
-
-
     private String labelPartsOfSpeech(String input){
         StringBuilder sentenceStructure = new StringBuilder();
 
@@ -159,9 +162,10 @@ public class RequirementRestService {
         for(CoreLabel coreLabel : coreLabels){
             String pos = coreLabel.get(CoreAnnotations.PartOfSpeechAnnotation.class);
             sentenceStructure.append(pos);
-            //System.out.println(sentenceStructure);
-            //System.out.println(coreLabel.originalText() + "=" + pos);
+            System.out.println(sentenceStructure);
+            System.out.println(coreLabel.originalText() + "=" + pos);
         }
         return sentenceStructure.toString();
     }
+
 }
