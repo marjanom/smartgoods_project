@@ -162,8 +162,8 @@ public class RequirementRestService {
         for(CoreLabel coreLabel : coreLabels){
             String pos = coreLabel.get(CoreAnnotations.PartOfSpeechAnnotation.class);
             sentenceStructure.append(pos);
-            System.out.println(sentenceStructure);
-            System.out.println(coreLabel.originalText() + "=" + pos);
+            //System.out.println(sentenceStructure);
+            //System.out.println(coreLabel.originalText() + "=" + pos);
         }
         return sentenceStructure.toString();
     }
