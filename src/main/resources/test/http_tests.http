@@ -1,0 +1,129 @@
+###
+# User create
+POST http://localhost:8080/api/v2/users/register
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "firstName": "{{firstname}}",
+  "lastName": "{{lastname}}",
+  "password": "{{password}}"
+}
+
+> {%
+client.test("created", function() {
+client.assert(response.status === 201, "OK");
+});
+%}
+
+###
+# Regular Login
+POST http://localhost:8080/api/v2/users/login
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+> {%
+client.test("logged in", function() {
+client.assert(response.status === 200, "OK");
+});
+%}
+
+###
+# Change password
+PUT http://localhost:8080/api/v2/users/{{username}}/password
+Content-Type: application/json
+
+{
+  "oldPassword": "{{password}}",
+  "newPassword": "{{newpassword}}",
+  "controlNewPassword": "{{newpassword}}"
+}
+
+> {%
+client.test("password change", function() {
+client.assert(response.status === 200, "OK");
+});
+%}
+
+###
+# Login with new password
+POST http://localhost:8080/api/v2/users/login
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{newpassword}}"
+}
+
+> {%
+client.test("login", function() {
+client.assert(response.status === 200, "OK");
+});
+%}
+
+###
+# Logout
+POST http://localhost:8080/api/v2/users/{{username}}/logout
+Content-Type: application/json
+
+> {%
+client.test("logout", function() {
+client.assert(response.status === 200, "OK");
+});
+%}
+
+###
+# Login with new password
+POST http://localhost:8080/api/v2/users/login
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{newpassword}}"
+}
+
+> {%
+client.test("logout", function() {
+client.assert(response.status === 200, "OK");
+});
+%}
+
+###
+# Register already existing user
+POST http://localhost:8080/api/v2/users/register
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "firstName": "{{firstname}}",
+  "lastName": "{{lastname}}",
+  "password": "{{password}}"
+}
+
+> {%
+client.test("Conflict", function() {
+client.assert(response.status === 409, "Conflict - OK");
+});
+%}
+
+
+
+###
+# Login, user does not exist
+POST http://localhost:8080/api/v2/users/login
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{newpassword}}"
+}
+
+> {%
+client.test("Login - user doesn't exist", function() {
+client.assert(response.status === 401, "Unauthorized");
+});
+%}
