@@ -27,8 +27,8 @@ class UserRestServiceTest {
     private final long sessionValidUntil = new Date().getTime() + 1000 * 60 * 60;
     String password = "password";
     String username = "username";
-    String firstname = "thomas";
-    String lastname = "scheibelhofer";
+    String firstname = "marko";
+    String lastname = "marjanovic";
     @Mock
     UserEntityService userEntityService;
     @InjectMocks
