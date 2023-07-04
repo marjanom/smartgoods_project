@@ -63,7 +63,7 @@ class UserRestServiceTest {
     }
 
     @Test
-    void comparePassword() {
+    void testComparePassword() {
         // Act
         boolean passwordsAreEqual = userRestService.comparePassword(user, password);
 
@@ -73,7 +73,7 @@ class UserRestServiceTest {
     }
 
     @Test
-    void sessionValid() {
+    void testSessionValid() {
 
         // Act
         boolean sessionIsValid;
@@ -89,7 +89,7 @@ class UserRestServiceTest {
     }
 
     @Test
-    void logoutUserOnInvalidSession() {
+    void testLogoutUserOnInvalidSession() {
         user.setSessionValidUntil(null);
         // Act && Assert
         Assertions.assertThrows(InvalidSessionException.class, () -> userRestService.logoutUserOnInvalidSession(user));
@@ -97,7 +97,7 @@ class UserRestServiceTest {
     }
 
     @Test
-    void login() {
+    void testLogin() {
 
         // Arrange
         boolean userIsLoggedIn;
@@ -120,7 +120,7 @@ class UserRestServiceTest {
     }
 
     @Test
-    void loginWithLockedUser() {
+    void testLoginWithLockedUser() {
 
         user.setLockedUntil(new Date().getTime() * 2);
 
@@ -131,7 +131,7 @@ class UserRestServiceTest {
     }
 
     @Test
-    void logout() {
+    void testLogout() {
         // Arrange
         boolean userIsLoggedOut;
         Mockito.when(userEntityService.getUserByUsername(username))
@@ -149,7 +149,7 @@ class UserRestServiceTest {
     }
 
     @Test
-    void logoutWithInvalidSession() {
+    void testLogoutWithInvalidSession() {
         Mockito.when(userEntityService.getUserByUsername(username))
                 .thenReturn(user);
 
@@ -157,7 +157,7 @@ class UserRestServiceTest {
     }
 
     @Test
-    void logoutWithInvalidUsername() {
+    void testLogoutWithInvalidUsername() {
         Mockito.when(userEntityService.getUserByUsername(username))
                 .thenReturn(user);
 
@@ -166,7 +166,7 @@ class UserRestServiceTest {
 
 
     @Test
-    void createUserWithExistingUsername() {
+    void testCreateUserWithExistingUsername() {
         //Arrange
         UserMapper userMapper = new UserMapper();
         InboundUserRegistrationDto inboundUserRegistrationDto = InboundUserRegistrationDto.builder()
@@ -189,7 +189,7 @@ class UserRestServiceTest {
 
 
     @Test
-    void changePassword() {
+    void testChangePassword() {
         // Arrange
         InboundUserChangePasswordDto inboundUserChangePasswordDto = InboundUserChangePasswordDto.builder()
                 .oldPassword("password")
@@ -214,7 +214,7 @@ class UserRestServiceTest {
     }
 
     @Test
-    void changePasswordWithInvalidPassword() {
+    void testChangePasswordWithInvalidPassword() {
         InboundUserChangePasswordDto inboundUserChangePasswordDto = InboundUserChangePasswordDto.builder()
                 .oldPassword("password")
                 .newPassword("newPassword")
@@ -230,7 +230,7 @@ class UserRestServiceTest {
 
 
     @Test
-    void removeUserByUsername() {
+    void testRemoveUserByUsername() {
         Mockito.when(userEntityService.getUserByUsername(username))
                 .thenReturn(user);
 
